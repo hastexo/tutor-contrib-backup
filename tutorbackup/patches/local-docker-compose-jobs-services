@@ -1,0 +1,17 @@
+############# Backup worker service
+backup-job:
+  image: {{ BACKUP_DOCKER_IMAGE }}
+  environment:
+    - MYSQL_HOST={{ MYSQL_HOST }}
+    - MYSQL_PORT={{ MYSQL_PORT }}
+    - MYSQL_ROOT_USERNAME={{ MYSQL_ROOT_USERNAME }}
+    - MYSQL_ROOT_PASSWORD={{ MYSQL_ROOT_PASSWORD }}
+    - MONGODB_HOST={{ MONGODB_HOST }}
+    - MONGODB_PORT={{ MONGODB_PORT }}
+  volumes:
+    - ../backup:/backup
+    {% if ENABLE_HTTPS and ENABLE_WEB_PROXY %}- ../../data/caddy:/caddy{% endif %}
+  depends_on:
+    - mysql
+    - mongodb
+    - caddy
