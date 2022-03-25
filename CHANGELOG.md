@@ -2,6 +2,7 @@
 
 **Experimental. Do not use in production.**
 
+* Add backup and restore functionality for k8s Tutor deployment.
 * Add backup and restore functionality for local Tutor deployment.
 * Created plugin with
   [Cookiecutter](https://cookiecutter.readthedocs.io/) 
