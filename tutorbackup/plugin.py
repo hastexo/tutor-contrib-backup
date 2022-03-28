@@ -20,8 +20,8 @@ config = {
         "K8S_CRONJOB_HISTORYLIMIT_SUCCESS": 3,
         "K8S_CRONJOB_BACKUP_SCHEDULE": "0 0 * * *",
         "K8S_CRONJOB_RESTORE_SCHEDULE": None,
-        "S3_HOST": "{{ S3_HOST | default('') }}",
-        "S3_PORT": "{{ S3_PORT | default('') }}",
+        "S3_HOST": "{% if S3_HOST is defined and S3_HOST is not none %}{{ S3_HOST }}{% endif %}",  # noqa: E501
+        "S3_PORT": "{% if S3_PORT is defined and S3_PORT is not none %}{{ S3_PORT }}{% endif %}",  # noqa: E501
         "S3_REGION_NAME": "{{ S3_REGION | default('') }}",
         "S3_SIGNATURE_VERSION": "{{ S3_SIGNATURE_VERSION | default('s3v4') }}",
         "S3_ADDRESSING_STYLE": "{{ S3_ADDRESSING_STYLE | default('auto') }}",
