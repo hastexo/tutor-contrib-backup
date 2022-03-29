@@ -6,18 +6,18 @@ metadata:
   labels:
     app.kubernetes.io/component: job
 spec:
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - caddy
-          topologyKey: "kubernetes.io/hostname"
   template:
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - caddy
+              topologyKey: "kubernetes.io/hostname"
       restartPolicy: Never
       containers:
         - name: backup
@@ -69,16 +69,6 @@ metadata:
   labels:
     app.kubernetes.io/component: cronjob
 spec:
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - caddy
-          topologyKey: "kubernetes.io/hostname"
   failedJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE }}
   schedule: '{{ BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE }}'
   successfulJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS }}
@@ -86,6 +76,17 @@ spec:
     spec:
       template:
         spec:
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - caddy
+                  topologyKey: "kubernetes.io/hostname"
+          restartPolicy: Never
           containers:
             - name: backup
               image: {{ BACKUP_DOCKER_IMAGE }}
@@ -141,16 +142,6 @@ metadata:
   labels:
     app.kubernetes.io/component: cronjob
 spec:
-  affinity:
-    podAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        - labelSelector:
-            matchExpressions:
-            - key: app.kubernetes.io/name
-              operator: In
-              values:
-                - caddy
-          topologyKey: "kubernetes.io/hostname"
   failedJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE }}
   schedule: '{{ BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE }}'
   successfulJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS }}
@@ -158,6 +149,17 @@ spec:
     spec:
       template:
         spec:
+          affinity:
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - labelSelector:
+                    matchExpressions:
+                    - key: app.kubernetes.io/name
+                      operator: In
+                      values:
+                        - caddy
+                  topologyKey: "kubernetes.io/hostname"
+          restartPolicy: Never
           containers:
             - name: backup
               image: {{ BACKUP_DOCKER_IMAGE }}
