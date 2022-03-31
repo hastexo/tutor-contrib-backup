@@ -119,10 +119,8 @@ spec:
                   value: '{{ BACKUP_S3_SECRET_ACCESS_KEY }}'
                 - name: S3_BUCKET_NAME
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
-              command:
-                - '/bin/bash'
-                - '-c'
-                - 'backup_services.sh && python upload_to_s3.py'
+              command: ["/bin/sh", "-c"]
+              args: ["bash backup_services.sh && python upload_to_s3.py"]
           {% if ENABLE_WEB_PROXY %}
               volumeMounts:
                 - mountPath: /caddy/
@@ -192,10 +190,8 @@ spec:
                   value: '{{ BACKUP_S3_SECRET_ACCESS_KEY }}'
                 - name: S3_BUCKET_NAME
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
-              command:
-                - '/bin/bash'
-                - '-c'
-                - 'python download_from_s3.py && restore_services.sh'
+              command: ["/bin/sh", "-c"]
+              args: ["python download_from_s3.py && bash restore_services.sh"]
           {% if ENABLE_WEB_PROXY %}
               volumeMounts:
                 - mountPath: /caddy/
