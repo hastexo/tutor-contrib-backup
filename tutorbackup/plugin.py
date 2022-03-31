@@ -49,7 +49,7 @@ def backup(context):
     job_runner = context.job_runner(config)
     job_runner.run_job(
         service="backup",
-        command="bash backup_services.sh"
+        command="python backup_services.py"
     )
 
 
@@ -76,7 +76,7 @@ def restore(context):
 def backup(context):  # noqa: F811
     config = tutor_config.load(context.root)
     job_runner = K8sJobRunner(context.root, config)
-    command = "/bin/bash -c backup_services.sh && python upload_to_s3.py"
+    command = "python backup_services.py --upload"
     job_runner.run_job(service="backup-restore", command=command)
 
 

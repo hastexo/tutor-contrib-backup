@@ -120,9 +120,9 @@ spec:
                 - name: S3_BUCKET_NAME
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
               command:
-                - '/bin/bash'
-                - '-c'
-                - 'backup_services.sh && python upload_to_s3.py'
+                - 'python'
+                - 'backup_services.py'
+                - '--upload'
           {% if ENABLE_WEB_PROXY %}
               volumeMounts:
                 - mountPath: /caddy/
