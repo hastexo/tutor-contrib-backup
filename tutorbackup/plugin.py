@@ -88,7 +88,7 @@ def backup(context):  # noqa: F811
 def restore(context, version):  # noqa: F811
     config = tutor_config.load(context.root)
     job_runner = K8sJobRunner(context.root, config)
-    command = f'/bin/bash -c "python download_from_s3 {version} ' \
+    command = f'/bin/bash -c "python download_from_s3.py {version} ' \
               f'&& bash restore_services.sh"'
     job_runner.run_job(service="backup-restore", command=command)
 
