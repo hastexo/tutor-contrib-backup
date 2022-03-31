@@ -1,7 +1,7 @@
 import os
 import sys
 from botocore.exceptions import ClientError
-from .s3_client import S3_CLIENT
+from s3_client import S3_CLIENT
 
 
 if __name__ == "__main__":

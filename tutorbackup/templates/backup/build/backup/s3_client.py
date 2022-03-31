@@ -15,7 +15,7 @@ S3_CLIENT = boto3.client(
     region_name=os.environ['S3_REGION_NAME'],
     use_ssl=os.environ['S3_USE_SSL'],
     endpoint_url=os.environ.get('S3_ENDPOINT_URL'),
-    aws_access_key_id=os.environ['S3_ACCESS_KEY_ID'],
+    aws_access_key_id=os.environ['S3_ACCESS_KEY'],
     aws_secret_access_key=os.environ['S3_SECRET_ACCESS_KEY'],
     config=config,
 )
