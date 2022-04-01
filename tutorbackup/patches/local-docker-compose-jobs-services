@@ -8,6 +8,10 @@ backup-job:
     - MYSQL_ROOT_PASSWORD={{ MYSQL_ROOT_PASSWORD }}
     - MONGODB_HOST={{ MONGODB_HOST }}
     - MONGODB_PORT={{ MONGODB_PORT }}
+    {% if MONGODB_USERNAME and MONGODB_PASSWORD %}
+    - MONGODB_USERNAME={{ MONGODB_USERNAME }}
+    - MONGODB_PASSWORD={{ MONGODB_PASSWORD }}
+    {% endif %}
   volumes:
     - ../backup:/backup
     {% if ENABLE_HTTPS and ENABLE_WEB_PROXY %}- ../../data/caddy:/caddy{% endif %}
