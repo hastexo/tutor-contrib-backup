@@ -18,7 +18,7 @@ spec:
                   values:
                     - caddy
               topologyKey: "kubernetes.io/hostname"
-      restartPolicy: Never
+      restartPolicy: OnFailure
       containers:
         - name: backup
           image: {{ BACKUP_DOCKER_IMAGE }}
@@ -90,7 +90,7 @@ spec:
                       values:
                         - caddy
                   topologyKey: "kubernetes.io/hostname"
-          restartPolicy: Never
+          restartPolicy: OnFailure
           containers:
             - name: backup
               image: {{ BACKUP_DOCKER_IMAGE }}
@@ -128,7 +128,7 @@ spec:
                 - name: S3_BUCKET_NAME
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
               command: ["/bin/sh", "-c"]
-              args: ["bash backup_services.sh && python upload_to_s3.py"]
+              args: ["python backup_services.py --upload{% if not ENABLE_WEB_PROXY %} --exclude=caddy{% endif %}"]
           {% if ENABLE_WEB_PROXY %}
               volumeMounts:
                 - mountPath: /caddy/
@@ -165,7 +165,7 @@ spec:
                       values:
                         - caddy
                   topologyKey: "kubernetes.io/hostname"
-          restartPolicy: Never
+          restartPolicy: OnFailure
           containers:
             - name: backup
               image: {{ BACKUP_DOCKER_IMAGE }}

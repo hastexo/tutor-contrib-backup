@@ -46,11 +46,16 @@ hooks = {
 @click.pass_obj
 def backup(context):
     config = tutor_config.load(context.root)
+
+    command = "python backup_services.py"
+    web_proxy_enabled = config["ENABLE_WEB_PROXY"]
+    https_enabled = config["ENABLE_HTTPS"]
+    caddy_data_directory_exists = web_proxy_enabled and https_enabled
+    if not caddy_data_directory_exists:
+        command += " --exclude=caddy"
+
     job_runner = context.job_runner(config)
-    job_runner.run_job(
-        service="backup",
-        command="bash backup_services.sh"
-    )
+    job_runner.run_job(service="backup", command=command)
 
 
 @local_command_group.command(help="Restore MySQL, MongoDB, and Caddy")
@@ -75,9 +80,13 @@ def restore(context):
 @click.pass_obj
 def backup(context):  # noqa: F811
     config = tutor_config.load(context.root)
+
+    command = "python backup_services.py --upload"
+    caddy_data_directory_exists = config["ENABLE_WEB_PROXY"]
+    if not caddy_data_directory_exists:
+        command += " --exclude=caddy"
+
     job_runner = K8sJobRunner(context.root, config)
-    command = '/bin/bash -c "bash backup_services.sh ' \
-              '&& python upload_to_s3.py"'
     job_runner.run_job(service="backup-restore", command=command)
 
 
