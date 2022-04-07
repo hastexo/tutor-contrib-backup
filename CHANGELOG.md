@@ -1,4 +1,4 @@
-## Unreleased
+## Version 0.0.2 (2022-04-07)
 
 * [refactor] Rewrite backup and restore scripts in Python, improving
   logging and integrity verification.
