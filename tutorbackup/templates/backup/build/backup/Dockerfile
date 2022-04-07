@@ -12,7 +12,6 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | gpg --dearmor
     mkdir data backup
 
 COPY backup_services.py .
-COPY restore_services.sh .
-
+COPY restore_services.py .
 COPY s3_client.py .
-COPY download_from_s3.py .
+

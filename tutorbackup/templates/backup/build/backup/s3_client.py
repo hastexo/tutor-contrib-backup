@@ -19,3 +19,7 @@ S3_CLIENT = boto3.client(
     aws_secret_access_key=os.environ['S3_SECRET_ACCESS_KEY'],
     config=config,
 )
+
+
+class IntegrityError(BaseException):
+    pass

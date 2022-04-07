@@ -36,40 +36,39 @@ def get_size(dir_path):
     return total_size
 
 
-def mysqldump():
+def restore_mysql():
     user = ENV['MYSQL_ROOT_USERNAME']
     password = ENV['MYSQL_ROOT_PASSWORD']
     host = ENV['MYSQL_HOST']
     port = ENV['MYSQL_PORT']
-    outfile = MYSQL_DUMPFILE
+    dump_file = MYSQL_DUMPFILE
 
-    logger.info(f"Dumping MySQL databases on {host}:{port} to {outfile}")
-    cmd = ("mysqldump "
-           "--all-databases --add-drop-database --routines "
-           "--events --single-transaction "
-           "--quick --quote-names --max-allowed-packet=16M "
+    logger.info(f"Restoring MySQL databases on {host}:{port} from {dump_file}")
+    cmd = ("mysql "
            f"--host={host} --port={port} "
            f"--user={user} --password={password}")
-    with open(outfile, 'wb') as out:
+    with open(dump_file, 'rb') as dump:
         check_call(cmd,
                    shell=True,
-                   stdout=out,
+                   stdin=dump,
+                   stdout=sys.stdout,
                    stderr=sys.stderr)
 
-    size = os.path.getsize(outfile)
-    logger.info(f"Complete. {outfile} is {size} bytes.")
+    logger.info("MySQL restored.")
 
 
-def mongodump():
+def restore_mongodb():
     host = ENV['MONGODB_HOST']
     port = ENV['MONGODB_PORT']
-    outdir = MONGODB_DUMPDIR
+    dump_dir = MONGODB_DUMPDIR
 
-    logger.info(f"Dumping MongoDB databases on {host}:{port} to {outdir}")
-    cmd = ("mongodump "
-           f"--out={outdir} "
-           f"--host={host} "
-           f"--port={port}")
+    logger.info(
+        f"Restoring MongoDB databases on {host}:{port} from {dump_dir}")
+    cmd = ("mongorestore "
+           "--stopOnError --drop "
+           f"--host={host} --port={port} "
+           f"{dump_dir}"
+           )
     try:
         cmd += (f" --username={ENV['MONGODB_USERNAME']} "
                 f"--password={ENV['MONGODB_PASSWORD']}")
@@ -81,78 +80,76 @@ def mongodump():
                stdout=sys.stdout,
                stderr=sys.stderr)
 
-    total_size = get_size(outdir)
-    logger.info(f"Complete. {outdir} total size {total_size} bytes.")
+    logger.info("MongoDB restored.")
 
 
-def caddydump():
-    outdir = CADDY_DUMPDIR
-    logger.info(f"Copying Caddy data to {outdir}")
-    shutil.copytree('caddy', outdir)
+def restore_caddy():
+    dump_dir = CADDY_DUMPDIR
+    caddy_dir = 'caddy'
+    logger.info(f"Copying Caddy data from {dump_dir}")
+    shutil.copytree(dump_dir, caddy_dir)
 
-    total_size = get_size(outdir)
-    logger.info(f"Complete. {outdir} total size {total_size} bytes.")
-
-
-def archive(paths):
-    outfile = TARFILE
-
-    logger.info(f"Creating archive {outfile}")
-    with tarfile.open(outfile, "w:xz") as tar:
-        for item in paths:
-            tar.add(item)
-
-    size = os.path.getsize(outfile)
-    logger.info(f"Complete. {outfile} is {size} bytes.")
+    total_size = get_size(caddy_dir)
+    logger.info(f"Complete. {caddy_dir} total size {total_size} bytes.")
 
 
-def upload_to_s3():
+def extract():
+    tar_file = TARFILE
+    out_dir = DUMP_DIRECTORY
+
+    logger.info(f"Extracting archive {tar_file} to {out_dir}")
+    with tarfile.open(tar_file, "r:xz") as tar:
+        tar.extractall()
+
+    size = get_size(out_dir)
+    logger.info(f"Complete. {out_dir} is {size} bytes.")
+
+
+def download_from_s3(version_id=None):
     from s3_client import S3_CLIENT, IntegrityError
 
     bucket = ENV['S3_BUCKET_NAME']
     file_name = TARFILE
 
-    logger.info(f"Uploading {file_name} to S3 bucket {bucket}")
-    calculated_checksum = hashlib.md5(
-        open(file_name, 'rb').read()).hexdigest()
-
+    logger.info(f"Downloading {file_name} from S3 bucket {bucket}")
     try:
-        S3_CLIENT.upload_file(
-            file_name,
+        S3_CLIENT.download_file(
             bucket,
             os.path.basename(file_name),
-            ExtraArgs={
-                'Metadata': {'checksum-md5': calculated_checksum},
-            }
+            file_name,
+            ExtraArgs={'VersionId': version_id} if version_id else None,
         )
-        logger.info(f"Uploaded {file_name} to {bucket}.")
 
-        logger.info("Checking uploaded file's integrity ...")
+        logger.info("Checking downloaded file's integrity ...")
         obj_metadata = S3_CLIENT.head_object(
             Bucket=bucket,
             Key=os.path.basename(file_name),
         )
 
-        received_checksum = obj_metadata['Metadata']['checksum-md5']
-        version_id = obj_metadata['VersionId']
-        size = obj_metadata['ContentLength']
+        received_version_id = obj_metadata['VersionId']
+        if version_id:
+            version_id_correct = (version_id == received_version_id)
+        else:
+            version_id_correct = True
 
-        if received_checksum == calculated_checksum:
+        received_checksum = obj_metadata['Metadata']['checksum-md5']
+        calculated_checksum = hashlib.md5(
+            open(file_name, 'rb').read()).hexdigest()
+        checksum_correct = (received_checksum == calculated_checksum)
+
+        size = os.path.getsize(file_name)
+
+        if checksum_correct and version_id_correct:
             logger.info("File integrity verified.\n"
-                        f"Version ID: '{version_id}'\n"
+                        f"Version ID: '{received_version_id}'\n"
                         f"Size: {size} bytes\n"
                         f"Checksum: '{received_checksum}'")
         else:
-            S3_CLIENT.delete_object(
-                Bucket=bucket,
-                Key=os.path.basename(file_name),
-                VersionId=version_id,
-            )
+            os.remove(file_name)
             raise IntegrityError(
                 "File integrity could not be verified. "
-                "Deleted the uploaded version "
-                f"(VersionId: {version_id})."
-            )
+                "Deleted the downloaded file with "
+                f"VersionId='{received_version_id}'.")
 
     except (ClientError, IntegrityError) as e:
         logger.exception(e, exc_info=True)
@@ -164,8 +161,10 @@ def upload_to_s3():
     type=click.Choice(['mysql', 'mongodb', 'caddy']),
     multiple=True
 )
-@click.option('--upload', is_flag=True, help="Upload to S3")
-def main(exclude, upload):
+@click.option('--version', default="", type=str,
+              help="Version ID of the backup file")
+@click.option('--download', is_flag=True, help="Download from S3")
+def main(exclude, version, download):
     loglevel = logging.INFO
     try:
         loglevel = getattr(logging, ENV['LOG_LEVEL'].upper())
@@ -175,21 +174,17 @@ def main(exclude, upload):
     logger.addHandler(handler)
     logger.setLevel(loglevel)
 
-    paths = []
+    if download:
+        download_from_s3(version_id=version)
+
+    extract()
+
     if 'mysql' not in exclude:
-        mysqldump()
-        paths.append(MYSQL_DUMPFILE)
+        restore_mysql()
     if 'mongodb' not in exclude:
-        mongodump()
-        paths.append(MONGODB_DUMPDIR)
+        restore_mongodb()
     if 'caddy' not in exclude:
-        caddydump()
-        paths.append(CADDY_DUMPDIR)
-
-    archive(paths)
-
-    if upload:
-        upload_to_s3()
+        restore_caddy()
 
 
 if __name__ == '__main__':

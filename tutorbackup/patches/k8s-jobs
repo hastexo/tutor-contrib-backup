@@ -203,7 +203,7 @@ spec:
                 - name: S3_BUCKET_NAME
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
               command: ["/bin/sh", "-c"]
-              args: ["python download_from_s3.py && bash restore_services.sh"]
+              args: ["python restore_services.py --download{% if not ENABLE_WEB_PROXY %} --exclude=caddy{% endif %}"]
           {% if ENABLE_WEB_PROXY %}
               volumeMounts:
                 - mountPath: /caddy/

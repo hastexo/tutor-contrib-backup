@@ -69,11 +69,15 @@ def restore(context):
         click.echo(f"ERROR: '{filename}' not found!")
         return
 
+    command = "python restore_services.py"
+    web_proxy_enabled = config["ENABLE_WEB_PROXY"]
+    https_enabled = config["ENABLE_HTTPS"]
+    caddy_data_directory_exists = web_proxy_enabled and https_enabled
+    if not caddy_data_directory_exists:
+        command += " --exclude=caddy"
+
     job_runner = context.job_runner(config)
-    job_runner.run_job(
-        service="backup",
-        command="bash restore_services.sh"
-    )
+    job_runner.run_job(service="backup", command=command)
 
 
 @k8s_command_group.command(help="Backup MySQL, MongoDB, and Caddy")
@@ -96,9 +100,15 @@ def backup(context):  # noqa: F811
               help="Version ID of the backup file")
 def restore(context, version):  # noqa: F811
     config = tutor_config.load(context.root)
+
+    command = "python restore_services.py --download"
+    if version:
+        command += f" --version='{version}'"
+    caddy_data_directory_exists = config["ENABLE_WEB_PROXY"]
+    if not caddy_data_directory_exists:
+        command += " --exclude=caddy"
+
     job_runner = K8sJobRunner(context.root, config)
-    command = f'/bin/bash -c "python download_from_s3.py {version} ' \
-              f'&& bash restore_services.sh"'
     job_runner.run_job(service="backup-restore", command=command)
 
 
