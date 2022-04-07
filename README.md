@@ -54,6 +54,12 @@ To restore MySQL, MongoDB, and Caddy from a previously-made backup tar file:
 This will look for the tar file under `$(tutor config printroot)/env/backup/`,
 extracts the tar file, and restore the services from the backup files.
 
+You can also exclude specific data from the restore. For example, if
+you want to restore only MySQL data, and leave the state of MongoDB
+and Caddy untouched, run:
+
+    tutor k8s restore --exclude=caddy --exclude=mongodb
+
 ### In a Tutor k8s deployment:
 
 By default, the backup job runs as a scheduled 
@@ -85,6 +91,12 @@ To restore from a particular version of the backup:
 The restore command will start a job that downloads the specified version of 
 the backup from the S3 storage bucket and restores MySQL, MongoDB, and Caddy 
 from it.
+
+You can also exclude specific data from the restore. For example, if
+you want to restore MySQL and MongoDB data, but not certificate data
+for Caddy, run:
+
+    tutor k8s restore --exclude=caddy
 
 If you want to restore your environment periodically, set the 
 `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` configuration parameter. This will always 
