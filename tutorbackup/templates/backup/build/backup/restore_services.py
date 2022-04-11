@@ -87,7 +87,7 @@ def restore_caddy():
     dump_dir = CADDY_DUMPDIR
     caddy_dir = 'caddy'
     logger.info(f"Copying Caddy data from {dump_dir}")
-    shutil.copytree(dump_dir, caddy_dir)
+    shutil.copytree(dump_dir, caddy_dir, dirs_exist_ok=True)
 
     total_size = get_size(caddy_dir)
     logger.info(f"Complete. {caddy_dir} total size {total_size} bytes.")
