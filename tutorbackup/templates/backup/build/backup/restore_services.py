@@ -124,6 +124,7 @@ def download_from_s3(version_id=None):
         obj_metadata = S3_CLIENT.head_object(
             Bucket=bucket,
             Key=os.path.basename(file_name),
+            VersionId=version_id,
         )
 
         received_version_id = obj_metadata['VersionId']

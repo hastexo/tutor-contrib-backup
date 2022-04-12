@@ -1,3 +1,8 @@
+## Unreleased
+
+* [fix] When checking file integrity after download, compare the checksum to 
+  the correct version of the backup file on S3.
+
 ## Version 0.0.3 (2022-04-11)
 
 * [fix] Don’t break on existing directories when restoring Caddy data.
