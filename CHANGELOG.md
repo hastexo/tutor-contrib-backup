@@ -2,6 +2,7 @@
 
 * [fix] When checking file integrity after download, compare the checksum to 
   the correct version of the backup file on S3.
+* [feature] Add timestamps to log messages.
 
 ## Version 0.0.3 (2022-04-11)
 
