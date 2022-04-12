@@ -1,4 +1,4 @@
-## Unreleased
+## Version 0.0.4 (2022-04-12)
 
 * [fix] When checking file integrity after download, compare the checksum to 
   the correct version of the backup file on S3.
