@@ -154,6 +154,7 @@ def download_from_s3(version_id=None):
 
     except (ClientError, IntegrityError) as e:
         logger.exception(e, exc_info=True)
+        raise e
 
 
 @click.command()

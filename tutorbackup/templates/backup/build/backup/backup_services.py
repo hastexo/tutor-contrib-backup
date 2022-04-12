@@ -156,6 +156,7 @@ def upload_to_s3():
 
     except (ClientError, IntegrityError) as e:
         logger.exception(e, exc_info=True)
+        raise e
 
 
 @click.command()
