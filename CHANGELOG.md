@@ -1,3 +1,7 @@
+## Unreleased
+
+* [fix] Fix for k8s restore that would fail if no version ID was given.
+
 ## Version 0.0.4 (2022-04-12)
 
 * [fix] When checking file integrity after download, compare the checksum to 

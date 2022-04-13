@@ -121,11 +121,20 @@ def download_from_s3(version_id=None):
         )
 
         logger.info("Checking downloaded file's integrity ...")
-        obj_metadata = S3_CLIENT.head_object(
-            Bucket=bucket,
-            Key=os.path.basename(file_name),
-            VersionId=version_id,
-        )
+        # boto3.client.head_object will break if empty string or None values
+        # are passed as the VersionId argument. So add that function argument
+        # only if a version ID is given.
+        if version_id:
+            obj_metadata = S3_CLIENT.head_object(
+                Bucket=bucket,
+                Key=os.path.basename(file_name),
+                VersionId=version_id,
+            )
+        else:
+            obj_metadata = S3_CLIENT.head_object(
+                Bucket=bucket,
+                Key=os.path.basename(file_name),
+            )
 
         received_version_id = obj_metadata['VersionId']
         if version_id:
