@@ -1,4 +1,4 @@
-## Unreleased
+## Version 0.0.5 (2022-04-13)
 
 * [fix] Fix for k8s restore that would fail if no version ID was given.
 
