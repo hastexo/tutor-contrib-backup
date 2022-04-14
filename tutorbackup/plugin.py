@@ -114,20 +114,26 @@ def backup(context):  # noqa: F811
     multiple=True,
     help="Exclude services from restore"
 )
-def restore(context, version, exclude):  # noqa: F811
+@click.option('--list-versions', is_flag=False, flag_value=20, type=int,
+              help="List n latest backup versions (n=20 by default)")
+def restore(context, version, exclude, list_versions):  # noqa: F811
     config = tutor_config.load(context.root)
 
-    command = "python restore_services.py --download"
-    if version:
-        command += f" --version='{version}'"
+    command = "python restore_services.py"
+    if list_versions:
+        command += f" --list-versions={list_versions}"
+    else:
+        command += " --download"
+        if version:
+            command += f" --version='{version}'"
 
-    if 'caddy' not in exclude:
-        caddy_data_directory_exists = config["ENABLE_WEB_PROXY"]
-        if not caddy_data_directory_exists:
-            exclude = (*exclude, "caddy")
+        if 'caddy' not in exclude:
+            caddy_data_directory_exists = config["ENABLE_WEB_PROXY"]
+            if not caddy_data_directory_exists:
+                exclude = (*exclude, "caddy")
 
-    for service in exclude:
-        command += f" --exclude={service}"
+        for service in exclude:
+            command += f" --exclude={service}"
 
     job_runner = K8sJobRunner(context.root, config)
     job_runner.run_job(service="backup-restore", command=command)

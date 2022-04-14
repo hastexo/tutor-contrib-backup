@@ -166,6 +166,33 @@ def download_from_s3(version_id=None):
         raise e
 
 
+def get_versions(number_of_versions=20):
+    from s3_client import S3_CLIENT
+
+    bucket = ENV['S3_BUCKET_NAME']
+    file_name = TARFILE
+
+    logger.info(
+        f"Retrieving available versions for {file_name} from {bucket}")
+    try:
+        response = S3_CLIENT.list_object_versions(
+            Bucket=bucket,
+            Prefix=os.path.basename(file_name),
+        )
+        column_width = 32
+        output = (f"{'VersionId'.center(column_width)}  "
+                  f"{'Timestamp'.center(column_width)}\n")
+        for item in response['Versions'][:number_of_versions]:
+            output += f"{item['VersionId']}  {item['LastModified']}\n"
+
+        logger.info(f"Last {number_of_versions} backup versions:\n"
+                    f"{output}")
+
+    except ClientError as e:
+        logger.exception(e, exc_info=True)
+        raise e
+
+
 @click.command()
 @click.option(
     '--exclude',
@@ -175,7 +202,9 @@ def download_from_s3(version_id=None):
 @click.option('--version', default="", type=str,
               help="Version ID of the backup file")
 @click.option('--download', is_flag=True, help="Download from S3")
-def main(exclude, version, download):
+@click.option('--list-versions', is_flag=False, flag_value=20, type=int,
+              help="List n latest backup versions (n=20 by default)")
+def main(exclude, version, download, list_versions):
     loglevel = logging.INFO
     try:
         loglevel = getattr(logging, ENV['LOG_LEVEL'].upper())
@@ -187,6 +216,10 @@ def main(exclude, version, download):
     handler.setFormatter(formatter)
     logger.addHandler(handler)
     logger.setLevel(loglevel)
+
+    if list_versions:
+        get_versions(number_of_versions=list_versions)
+        return
 
     if download:
         download_from_s3(version_id=version)

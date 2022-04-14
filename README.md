@@ -58,7 +58,7 @@ You can also exclude specific data from the restore. For example, if
 you want to restore only MySQL data, and leave the state of MongoDB
 and Caddy untouched, run:
 
-    tutor k8s restore --exclude=caddy --exclude=mongodb
+    tutor local restore --exclude=caddy --exclude=mongodb
 
 ### In a Tutor k8s deployment:
 
@@ -84,7 +84,20 @@ To restore from the latest version of the backup:
 
     tutor k8s restore
 
-To restore from a particular version of the backup:
+To restore from a particular version of the backup, you first need its 
+version ID. You can either look this up by interacting with your S3 
+bucket through your S3 provider's CLI or web UI; or you can use the 
+command below to list the version ID and the corresponding timestamp of the 
+last 20 backups:
+
+    tutor k8s restore --list-versions
+
+You can change the number of versions shown by passing an integer to the 
+`list-versions` argument. For example, `--list-versions=10`.
+This will start a Kubernetes Job. So the output will be in the corresponding 
+pod's log.
+
+Use the ID of the desired backup version to restore services:
 
     tutor k8s restore --version={version-id}
 

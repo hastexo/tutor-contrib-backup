@@ -1,3 +1,8 @@
+## Unreleased
+
+* [feature] List available backup versions using `tutor k8s restore 
+  --list-versions`.
+
 ## Version 0.0.5 (2022-04-13)
 
 * [fix] Fix for k8s restore that would fail if no version ID was given.
