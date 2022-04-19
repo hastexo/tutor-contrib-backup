@@ -1,4 +1,4 @@
-## Unreleased
+## Version 0.0.6 (2022-04-19)
 
 * [feature] List available backup versions using `tutor k8s restore 
   --list-versions`.
