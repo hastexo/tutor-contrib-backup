@@ -32,6 +32,11 @@ To enable this plugin, run:
 
     tutor plugins enable backup
 
+Then, run the following command to add the plugin's configuration 
+parameters to your Tutor environment:
+
+    tutor config save
+
 Before starting Tutor, build the Docker image:
 
     tutor images build backup
