@@ -3,14 +3,11 @@ from glob import glob
 import os
 import pkg_resources
 import click
+from tutor import hooks
 from tutor import config as tutor_config
 from tutor.commands.local import local as local_command_group
 from tutor.commands.k8s import k8s as k8s_command_group, K8sJobRunner
 
-
-templates = pkg_resources.resource_filename(
-    "tutorbackup", "templates"
-)
 
 config = {
     "defaults": {
@@ -32,14 +29,20 @@ config = {
     }
 }
 
-hooks = {
-    "build-image": {
-        "backup": "{{ BACKUP_DOCKER_IMAGE }}",
-    },
-    "remote-image": {
-        "backup": "{{ BACKUP_DOCKER_IMAGE }}",
-    },
-}
+hooks.Filters.IMAGES_BUILD.add_item((
+    "backup",
+    ("plugins", "backup", "build", "backup"),
+    "{{ BACKUP_DOCKER_IMAGE }}",
+    (),
+))
+hooks.Filters.IMAGES_PULL.add_item((
+    "backup",
+    "{{ BACKUP_DOCKER_IMAGE }}",
+))
+hooks.Filters.IMAGES_PUSH.add_item((
+    "backup",
+    "{{ BACKUP_DOCKER_IMAGE }}",
+))
 
 
 @local_command_group.command(help="Backup MySQL, MongoDB, and Caddy")
@@ -139,14 +142,41 @@ def restore(context, version, exclude, list_versions):  # noqa: F811
     job_runner.run_job(service="backup-restore", command=command)
 
 
-def patches():
-    all_patches = {}
-    patches_dir = pkg_resources.resource_filename(
-        "tutorbackup", "patches"
+# Add the "templates" folder as a template root
+hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
+    pkg_resources.resource_filename("tutorbackup", "templates")
+)
+# Render the "build" and "apps" folders
+hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
+    [
+        ("backup/build", "plugins"),
+        ("backup/apps", "plugins"),
+    ],
+)
+# Load patches from files
+for path in glob(
+    os.path.join(
+        pkg_resources.resource_filename("tutorbackup", "patches"),
+        "*",
     )
-    for path in glob(os.path.join(patches_dir, "*")):
-        with open(path) as patch_file:
-            name = os.path.basename(path)
-            content = patch_file.read()
-            all_patches[name] = content
-    return all_patches
+):
+    with open(path, encoding="utf-8") as patch_file:
+        hooks.Filters.ENV_PATCHES.add_item(
+            (os.path.basename(path), patch_file.read())
+        )
+# Add configuration entries
+hooks.Filters.CONFIG_DEFAULTS.add_items(
+    [
+        (f"BACKUP_{key}", value)
+        for key, value in config.get("defaults", {}).items()
+    ]
+)
+hooks.Filters.CONFIG_UNIQUE.add_items(
+    [
+        (f"BACKUP_{key}", value)
+        for key, value in config.get("unique", {}).items()
+    ]
+)
+hooks.Filters.CONFIG_OVERRIDES.add_items(
+    list(config.get("overrides", {}).items())
+)
