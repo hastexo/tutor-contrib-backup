@@ -24,7 +24,7 @@ disaster recovery purposes.
 
 ## Installation
 
-    pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.0.6
+    pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.1.0
 
 ## Usage
 
