@@ -16,6 +16,6 @@ backup-job:
     - ../backup:/backup
     {% if ENABLE_HTTPS and ENABLE_WEB_PROXY %}- ../../data/caddy:/caddy{% endif %}
   depends_on:
-    - mysql
-    - mongodb
+    {% if RUN_MYSQL %}- mysql{% endif %}
+    {% if RUN_MONGODB %}- mongodb{% endif %}
     - caddy
