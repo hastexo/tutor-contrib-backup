@@ -64,7 +64,6 @@ spec:
           persistentVolumeClaim:
             claimName: caddy
       {% endif %}
-{% if BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE %}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -74,7 +73,9 @@ metadata:
     app.kubernetes.io/component: cronjob
 spec:
   failedJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE }}
+  suspend: {% if BACKUP_K8S_CRONJOB_BACKUP_ENABLE %}false{% else %}true{% endif %}
   schedule: '{{ BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE }}'
+  startingDeadlineSeconds: {{ BACKUP_K8S_CRONJOB_STARTING_DEADLINE_SECONDS }}
   successfulJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS }}
   jobTemplate:
     spec:
@@ -138,8 +139,6 @@ spec:
               persistentVolumeClaim:
                 claimName: caddy
           {% endif %}
-{% endif %}
-{% if BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE %}
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -149,7 +148,9 @@ metadata:
     app.kubernetes.io/component: cronjob
 spec:
   failedJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE }}
+  suspend: {% if BACKUP_K8S_CRONJOB_RESTORE_ENABLE %}false{% else %}true{% endif %}
   schedule: '{{ BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE }}'
+  startingDeadlineSeconds: {{ BACKUP_K8S_CRONJOB_STARTING_DEADLINE_SECONDS }}
   successfulJobsHistoryLimit: {{ BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS }}
   jobTemplate:
     spec:
@@ -213,4 +214,3 @@ spec:
               persistentVolumeClaim:
                 claimName: caddy
           {% endif %}
-{% endif %}

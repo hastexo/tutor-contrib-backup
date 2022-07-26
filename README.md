@@ -70,8 +70,8 @@ and Caddy untouched, run:
 By default, the backup job runs as a scheduled 
 [CronJobs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
 once a day at midnight. You can change the schedule by changing the 
-`BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE` configuration parameter. To turn off 
-the scheduled job completely, set `BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE` to None. 
+`BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE` configuration parameter. To suspend 
+the scheduled backup job, set `BACKUP_K8S_CRONJOB_BACKUP_ENABLE` to `false`. 
 Note that you need to restart your Kubernetes deployment with 
 `tutor k8s quickstart` for this change to take effect.
 
@@ -117,10 +117,12 @@ for Caddy, run:
     tutor k8s restore --exclude=caddy
 
 If you want to restore your environment periodically, set the 
-`BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` configuration parameter. This will always 
-download the latest version of the backup from the S3 bucket. Note that you 
-need to restart your Kubernetes deployment with `tutor k8s quickstart` for this 
-change to take effect.
+`BACKUP_K8S_CRONJOB_RESTORE_ENABLE` configuration parameter to `true` and provide
+the desired schedule by setting the `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` 
+(by default it is set to once a day at 30 mins past midnight).
+This will always download the latest version of the backup from the S3 bucket. 
+Note that you need to restart your Kubernetes deployment with `tutor k8s quickstart` 
+for these changes to take effect.
 
 You can also tweak the [history
 limits](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#jobs-history-limits)
@@ -130,12 +132,14 @@ parameters.
 Configuration
 -------------
 
-* `BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE` (default `1`)
-* `BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS` (default `3`)
-* `BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE` (default `"0 0 * * *"`, once a day at 
-  midnight)
-* `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` (default `None`, periodic restore is 
-  disabled)
+* `BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE` (default: `1`)
+* `BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS` (default: `3`)
+* `BACKUP_K8S_CRONJOB_STARTING_DEADLINE_SECONDS` (default: `900`)
+* `BACKUP_K8S_CRONJOB_BACKUP_ENABLE` (default: `true`, periodic backup is enabled.)
+* `BACKUP_K8S_CRONJOB_BACKUP_SCHEDULE` (default: `"0 0 * * *"`, once a day at midnight)
+* `BACKUP_K8S_CRONJOB_RESTORE_ENABLE` (default: `false`, periodic restore is disabled.)
+* `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` (default: `"30 0 * * *"`, once a day at 30 mins past
+   midnight)
 
 The following parameters will be pre-populated if the 
 [tutor-contrib-s3](https://github.com/hastexo/tutor-contrib-s3) 

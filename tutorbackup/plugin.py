@@ -15,8 +15,11 @@ config = {
         "DOCKER_IMAGE": "{{ DOCKER_REGISTRY }}backup:{{ BACKUP_VERSION }}",  # noqa: E501
         "K8S_CRONJOB_HISTORYLIMIT_FAILURE": 1,
         "K8S_CRONJOB_HISTORYLIMIT_SUCCESS": 3,
+        "K8S_CRONJOB_STARTING_DEADLINE_SECONDS": 900,
+        "K8S_CRONJOB_BACKUP_ENABLE": True,
         "K8S_CRONJOB_BACKUP_SCHEDULE": "0 0 * * *",
-        "K8S_CRONJOB_RESTORE_SCHEDULE": None,
+        "K8S_CRONJOB_RESTORE_ENABLE": False,
+        "K8S_CRONJOB_RESTORE_SCHEDULE": "30 0 * * *",
         "S3_HOST": "{{ S3_HOST | default('') }}",
         "S3_PORT": "{{ S3_PORT | default('') }}",
         "S3_REGION_NAME": "{{ S3_REGION | default('') }}",
