@@ -1,6 +1,9 @@
 ## Unreleased
 
 * [feature] Add ability to enable and disable CronJobs by suspending them.
+* [fix] Remove dependencies on mysql and mongodb from the
+  docker-compose configuration if Tutor is configured to run with
+  external MySQL and MongoDB.
 
 ## Version 0.1.0 (2022-06-29)
 
