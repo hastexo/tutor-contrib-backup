@@ -1,4 +1,4 @@
-## Unreleased
+## Version 0.2.0 (2022-07-26)
 
 * [feature] Add ability to enable and disable CronJobs by suspending them.
 * [fix] Remove dependencies on mysql and mongodb from the
