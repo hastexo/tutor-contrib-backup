@@ -1,3 +1,19 @@
+## Unreleased
+
+* [feature] From this version forward the backup files contain a date
+  stamp, and are thus named `backup.YYYY-MM-DD.tar.xz` rather than
+  just `backup.tar.xz`. Users can now specify a date when using the
+  restore command. In a Kubernetes deployment, if multiple backups are
+  made in one day, users can specify the date and the version ID of
+  the desired backup when restoring. If no date is specified on
+  restore, the restore job looks for a backup from today. This means
+  that when upgrading from an earlier version, attempting a restore
+  operation *before any new backup is made* will fail because the
+  restore will be looking for a backup named
+  `backup.YYYY-MM-DD.tar.xz` when no such backup exists yet. In that
+  event, please rename your existing `backup.tar.xz` file to the
+  `backup.YYYY-MM-DD.tar.xz` format, reflecting the current date.
+
 ## Version 0.2.0 (2022-07-26)
 
 * [feature] Add ability to enable and disable CronJobs by suspending them.

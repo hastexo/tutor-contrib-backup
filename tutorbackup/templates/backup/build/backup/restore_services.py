@@ -6,6 +6,7 @@ import os
 import shutil
 import sys
 import tarfile
+from datetime import datetime
 from subprocess import check_call
 
 import click
@@ -19,8 +20,6 @@ DUMP_DIRECTORY = '/data'
 MYSQL_DUMPFILE = os.path.join(DUMP_DIRECTORY, 'mysql_dump.sql')
 MONGODB_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'mongodb_dump')
 CADDY_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'caddy')
-
-TARFILE = '/backup/backup.tar.xz'
 
 logger = logging.getLogger(__name__)
 
@@ -93,23 +92,25 @@ def restore_caddy():
     logger.info(f"Complete. {caddy_dir} total size {total_size} bytes.")
 
 
-def extract():
-    tar_file = TARFILE
+def extract(file_name):
     out_dir = DUMP_DIRECTORY
 
-    logger.info(f"Extracting archive {tar_file} to {out_dir}")
-    with tarfile.open(tar_file, "r:xz") as tar:
-        tar.extractall()
+    logger.info(f"Extracting archive {file_name} to {out_dir}")
+    try:
+        with tarfile.open(file_name, "r:xz") as tar:
+            tar.extractall()
+    except FileNotFoundError as e:
+        logger.exception(e, exc_info=True)
+        raise e
 
     size = get_size(out_dir)
     logger.info(f"Complete. {out_dir} is {size} bytes.")
 
 
-def download_from_s3(version_id=None):
+def download_from_s3(file_name, version_id=None):
     from s3_client import S3_CLIENT, IntegrityError
 
     bucket = ENV['S3_BUCKET_NAME']
-    file_name = TARFILE
 
     logger.info(f"Downloading {file_name} from S3 bucket {bucket}")
     try:
@@ -166,11 +167,10 @@ def download_from_s3(version_id=None):
         raise e
 
 
-def get_versions(number_of_versions=20):
+def get_versions(file_name, number_of_versions=20):
     from s3_client import S3_CLIENT
 
     bucket = ENV['S3_BUCKET_NAME']
-    file_name = TARFILE
 
     logger.info(
         f"Retrieving available versions for {file_name} from {bucket}")
@@ -199,12 +199,15 @@ def get_versions(number_of_versions=20):
     type=click.Choice(['mysql', 'mongodb', 'caddy']),
     multiple=True
 )
+@click.option('--date', type=click.DateTime(formats=["%Y-%m-%d"]),
+              default=str(datetime.today().date()),
+              help="Backup date (YYYY-MM-DD)")
 @click.option('--version', default="", type=str,
               help="Version ID of the backup file")
 @click.option('--download', is_flag=True, help="Download from S3")
 @click.option('--list-versions', is_flag=False, flag_value=20, type=int,
               help="List n latest backup versions (n=20 by default)")
-def main(exclude, version, download, list_versions):
+def main(exclude, date, version, download, list_versions):
     loglevel = logging.INFO
     try:
         loglevel = getattr(logging, ENV['LOG_LEVEL'].upper())
@@ -217,14 +220,16 @@ def main(exclude, version, download, list_versions):
     logger.addHandler(handler)
     logger.setLevel(loglevel)
 
+    file_name = f'/backup/backup.{date.date()}.tar.xz'
+
     if list_versions:
-        get_versions(number_of_versions=list_versions)
+        get_versions(file_name, number_of_versions=list_versions)
         return
 
     if download:
-        download_from_s3(version_id=version)
+        download_from_s3(file_name, version_id=version)
 
-    extract()
+    extract(file_name)
 
     if 'mysql' not in exclude:
         restore_mysql()

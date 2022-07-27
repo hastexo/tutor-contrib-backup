@@ -1,3 +1,4 @@
+from datetime import datetime
 from .__about__ import __version__
 from glob import glob
 import os
@@ -72,16 +73,12 @@ def backup(context):
     multiple=True,
     help="Exclude services from restore"
 )
-def restore(context, exclude):
+@click.option('--date', type=click.DateTime(formats=["%Y-%m-%d"]),
+              default=str(datetime.today().date()),
+              help="Backup date (YYYY-MM-DD)")
+def restore(context, exclude, date):
     config = tutor_config.load(context.root)
-
-    filename = context.root + "/env/backup/backup.tar.xz"
-    click.echo(f"Restoring from '{filename}'")
-    if not os.path.isfile(filename):
-        click.echo(f"ERROR: '{filename}' not found!")
-        return
-
-    command = "python restore_services.py"
+    command = f"python restore_services.py --date={date.date()}"
     if 'caddy' not in exclude:
         web_proxy_enabled = config["ENABLE_WEB_PROXY"]
         https_enabled = config["ENABLE_HTTPS"]
@@ -112,6 +109,9 @@ def backup(context):  # noqa: F811
 
 @k8s_command_group.command(help="restore MySQL, MongoDB, and Caddy")
 @click.pass_obj
+@click.option('--date', type=click.DateTime(formats=["%Y-%m-%d"]),
+              default=str(datetime.today().date()),
+              help="Backup date (YYYY-MM-DD)")
 @click.option('--version', default="", type=str,
               help="Version ID of the backup file")
 @click.option(
@@ -122,10 +122,10 @@ def backup(context):  # noqa: F811
 )
 @click.option('--list-versions', is_flag=False, flag_value=20, type=int,
               help="List n latest backup versions (n=20 by default)")
-def restore(context, version, exclude, list_versions):  # noqa: F811
+def restore(context, date, version, exclude, list_versions):  # noqa: F811
     config = tutor_config.load(context.root)
 
-    command = "python restore_services.py"
+    command = f"python restore_services.py --date={date.date()}"
     if list_versions:
         command += f" --list-versions={list_versions}"
     else:

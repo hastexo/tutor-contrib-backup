@@ -6,6 +6,7 @@ import os
 import shutil
 import sys
 import tarfile
+from datetime import datetime
 from subprocess import check_call
 
 import click
@@ -20,7 +21,8 @@ MYSQL_DUMPFILE = os.path.join(DUMP_DIRECTORY, 'mysql_dump.sql')
 MONGODB_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'mongodb_dump')
 CADDY_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'caddy')
 
-TARFILE = '/backup/backup.tar.xz'
+date_stamp = datetime.today().strftime("%Y-%m-%d")
+TARFILE = f'/backup/backup.{date_stamp}.tar.xz'
 
 logger = logging.getLogger(__name__)
 

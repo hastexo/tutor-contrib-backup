@@ -5,22 +5,23 @@ This is an **experimental** plugin for
 functionality for MySQL, MongoDB, and Caddy services in both local and 
 Kubernetes Tutor deployments.
 
-In a local deployment, you can run the backup from the command line. 
-The backups are stored as a single tar file in
-`$(tutor config printroot)/env/backup/`. You can then copy the Tutor config root
-folder to a new host and restore your Open edX environment with the restore 
-command.
+In a local deployment, you can run the backup from the command line.
+The backups are stored as a single compressed tar file, named
+`backup.YYYY-MM-DD.tar.xz`, in `$(tutor config
+printroot)/env/backup/`. You can then copy the Tutor config root
+folder to a new host and restore your Open edX environment with the
+restore command.
 
-In Kubernetes, the plugin runs the backup job as a 
-[CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/) 
-by default. You can also run the backup job from the command line.
-In both cases the backup tar file is stored in an S3 bucket.
-Then, in a new Kubernetes deployment, you can use the restore command to 
-restore your Open edX environment. 
-You can even schedule the restore as a CronJob to
-periodically download the latest backup and restore your environment. This 
-can, for example, be useful if you want to maintain a standby site for 
-disaster recovery purposes.
+In Kubernetes, the plugin runs the backup job as a
+[CronJob](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/)
+by default. You can also run the backup job from the command line.  In
+both cases the backup tar file, named `backup.YYYY-MM-DD.tar.xz`, is
+stored in an S3 bucket.  Then, in a new Kubernetes deployment, you can
+use the restore command to restore your Open edX environment.  You can
+even schedule the restore as a CronJob to periodically download the
+latest backup and restore your environment. This can, for example, be
+useful if you want to maintain a standby site for disaster recovery
+purposes.
 
 ## Version compatibility matrix
 
@@ -98,14 +99,20 @@ If you need to run the backup job outside the schedule, use:
     tutor k8s backup
 
 The backup job backs up MySQL, MongoDB, and the Caddy data directory, 
-creates a tar file, and uploads it to an S3 storage bucket as set by 
-the `BACKUP_S3_*` configuration parameters. Note that the bucket must support 
-[object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html).
+creates a tar file with a date stamp, and uploads it to an S3 storage bucket as 
+set by the `BACKUP_S3_*` configuration parameters. Note that if you want to 
+run multiple backups in a day, you might need to enable
+[object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html)
+ in your bucket. Otherwise, only the last backup taken on any day survives.
 
 
-To restore from the latest version of the backup:
+To restore from the latest version of the backup made today:
 
     tutor k8s restore
+
+To restore from the latest version of the backup made on a particular date:
+
+    tutor k8s restore --date={YYYY-MM-DD}
 
 To restore from a particular version of the backup, you first need its 
 version ID. You can either look this up by interacting with your S3 
@@ -123,6 +130,10 @@ pod's log.
 Use the ID of the desired backup version to restore services:
 
     tutor k8s restore --version={version-id}
+
+If you run multiple backups each day and want to restore from a specific 
+version of a backup on a particular day, use `--version` in 
+combination with `--date`.
 
 The restore command will start a job that downloads the specified version of 
 the backup from the S3 storage bucket and restores MySQL, MongoDB, and Caddy 
@@ -158,6 +169,9 @@ Configuration
 * `BACKUP_K8S_CRONJOB_RESTORE_ENABLE` (default: `false`, periodic restore is disabled.)
 * `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` (default: `"30 0 * * *"`, once a day at 30 mins past
    midnight)
+
+Make sure the periodic backup job always runs before the restore job during the 
+day.
 
 The following parameters will be pre-populated if the 
 [tutor-contrib-s3](https://github.com/hastexo/tutor-contrib-s3) 
