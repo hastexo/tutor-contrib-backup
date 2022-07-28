@@ -207,6 +207,11 @@ service, some of these values may be required to set.
   [rgw_dns_name](https://docs.ceph.com/en/latest/radosgw/config-ref/#confval-rgw_dns_name),
   you will need `BACKUP_S3_ADDRESSING_STYLE: path`.
 
+## Changelog
+
+For a detailed breakdown of features and fixes in each release, please
+see the [changelog](CHANGELOG.md).
+
 ## License
 
 This software is licensed under the terms of the AGPLv3.
