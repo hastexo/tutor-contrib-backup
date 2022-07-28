@@ -101,10 +101,14 @@ If you need to run the backup job outside the schedule, use:
 The backup job backs up MySQL, MongoDB, and the Caddy data directory, 
 creates a tar file with a date stamp, and uploads it to an S3 storage bucket as 
 set by the `BACKUP_S3_*` configuration parameters. Note that if you want to 
-run multiple backups in a day, you might need to enable
+run multiple backups in a day, you might want to enable
 [object versioning](https://docs.aws.amazon.com/AmazonS3/latest/userguide/Versioning.html)
  in your bucket. Otherwise, only the last backup taken on any day survives.
 
+You might also consider applying a lifecyle [expiration
+rule](https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-expire-general-considerations.html)
+to your storage bucket if you want to retain your backups for a
+limited time, and discard backups beyond a certain age.
 
 To restore from the latest version of the backup made today:
 
