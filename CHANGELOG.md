@@ -1,4 +1,4 @@
-## Unreleased
+## Version 0.3.0 (2022-07-28)
 
 * [feature] From this version forward the backup files contain a date
   stamp, and are thus named `backup.YYYY-MM-DD.tar.xz` rather than

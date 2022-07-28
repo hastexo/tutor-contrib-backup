@@ -33,7 +33,7 @@ appropriate one:
 | Open edX release | Tutor version     | Plugin branch | Plugin release |
 |------------------|-------------------|---------------|----------------|
 | Lilac            | `>=12.0, <13`     | Not supported | Not supported  |
-| Maple            | `>=13.2, <14`[^1] | `main`        | 0.2.0          |
+| Maple            | `>=13.2, <14`[^1] | `main`        | 0.3.0          |
 | Nutmeg           | `>=14.0, <15`     | forthcoming   | forthcoming    |
 
 [^1]: For Open edX Maple and Tutor 13, you must run version 13.2.0 or
@@ -43,7 +43,7 @@ appropriate one:
 
 ## Installation
 
-    pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.2.0
+    pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.3.0
 
 ## Usage
 
