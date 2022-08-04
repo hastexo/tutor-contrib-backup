@@ -1,3 +1,10 @@
+## Unreleased
+
+* [BREAKING CHANGE] Support Tutor 14 and Open edX Nutmeg. This entails
+  a configuration format change from JSON to YAML, meaning that from
+  version 1.0.0 this plugin only supports Tutor versions from 14.0.0
+  (and with that, only Open edX versions from Nutmeg).
+
 ## Version 0.3.0 (2022-07-28)
 
 * [feature] From this version forward the backup files contain a date
