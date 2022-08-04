@@ -43,7 +43,7 @@ appropriate one:
 
 ## Installation
 
-    pip install git+https://github.com/hastexo/tutor-contrib-backup@v0.3.0
+    pip install git+https://github.com/hastexo/tutor-contrib-backup@v1.0.0
 
 ## Usage
 
