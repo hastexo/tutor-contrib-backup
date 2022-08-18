@@ -20,7 +20,7 @@ backup-job:
     {% endif %}
     - MONGODB_AUTHENTICATION_DATABASE={{ BACKUP_MONGODB_AUTHENTICATION_DATABASE }}
   volumes:
-    - ../backup:/backup
+    - ../backup:/data/backup
     {% if ENABLE_HTTPS and ENABLE_WEB_PROXY %}- ../../data/caddy:/caddy{% endif %}
   depends_on:
     {% if RUN_MYSQL %}- mysql{% endif %}

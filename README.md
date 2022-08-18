@@ -109,6 +109,13 @@ rule](https://docs.aws.amazon.com/AmazonS3/latest/userguide/lifecycle-expire-gen
 to your storage bucket if you want to retain your backups for a
 limited time, and discard backups beyond a certain age.
 
+If you are running Kubernetes in a production environment, you might need to store the 
+dump and tar files in a [generic ephemeral volume](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/#generic-ephemeral-volumes) instead of the default local node storage
+(requires Kubernetes 1.23 or higher). To accomplish this, set `BACKUP_K8S_USE_EPHEMERAL_VOLUMES` to `True`.
+Optionally you can change the volume size using the `BACKUP_K8S_EPHEMERAL_VOLUME_SIZE`
+variable, which is `10Gi` by default.
+
+
 To restore from the latest version of the backup made today:
 
     tutor k8s restore
@@ -179,6 +186,8 @@ Configuration
 * `BACKUP_K8S_CRONJOB_RESTORE_ENABLE` (default: `false`, periodic restore is disabled.)
 * `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` (default: `"30 0 * * *"`, once a day at 30 mins past
    midnight)
+* `BACKUP_K8S_USE_EPHEMERAL_VOLUMES` (default: `false`)
+* `BACKUP_K8S_EPHEMERAL_VOLUME_SIZE` (default: `10Gi`)
 
 Make sure the periodic backup job always runs before the restore job during the 
 day.
