@@ -5,6 +5,7 @@ MongoDB databases to back up.
 Add `BACKUP_MONGODB_AUTHENTICATION_DATABASE` to override default 
 authentication database name.
 * [refactor] Remove obsolete scripts.
+* [fix] Use ephemeral volumes in K8s for data volume
 
 ## Version 1.1.0 (2022-08-31)
 

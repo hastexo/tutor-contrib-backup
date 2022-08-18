@@ -65,15 +65,37 @@ spec:
               value: '{{ BACKUP_S3_SECRET_ACCESS_KEY }}'
             - name: S3_BUCKET_NAME
               value: '{{ BACKUP_S3_BUCKET_NAME }}'
-      {% if ENABLE_WEB_PROXY %}
+          {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES or ENABLE_WEB_PROXY %}
           volumeMounts:
+            {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES %}
+            - mountPath: /data/
+              name: backup-volume
+            {% endif %}
+            {% if ENABLE_WEB_PROXY %}
             - mountPath: /caddy/
               name: data
+            {% endif %}
+          {% endif %}
+      {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES or ENABLE_WEB_PROXY %}
       volumes:
+        {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES %}
+        - name: backup-volume
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes:
+                  - ReadWriteOnce
+                resources:
+                  requests:
+                    storage: {{ BACKUP_K8S_EPHEMERAL_VOLUME_SIZE }}
+        {% endif %}
+        {% if ENABLE_WEB_PROXY %}
         - name: data
           persistentVolumeClaim:
             claimName: caddy
+        {% endif %}
       {% endif %}
+
 ---
 apiVersion: batch/v1
 kind: CronJob
@@ -150,14 +172,35 @@ spec:
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
               command: ["/bin/sh", "-c"]
               args: ["python backup_services.py --upload{% if not ENABLE_WEB_PROXY %} --exclude=caddy{% endif %}"]
-          {% if ENABLE_WEB_PROXY %}
+              {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES or ENABLE_WEB_PROXY %}
               volumeMounts:
+                {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES %}
+                - mountPath: /data/
+                  name: backup-volume
+                {% endif %}
+                {% if ENABLE_WEB_PROXY %}
                 - mountPath: /caddy/
                   name: data
+                {% endif %}
+              {% endif %}
+          {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES or ENABLE_WEB_PROXY %}
           volumes:
+            {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES %}
+            - name: backup-volume
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes:
+                      - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: {{ BACKUP_K8S_EPHEMERAL_VOLUME_SIZE }}
+            {% endif %}
+            {% if ENABLE_WEB_PROXY %}
             - name: data
               persistentVolumeClaim:
                 claimName: caddy
+            {% endif %}
           {% endif %}
 ---
 apiVersion: batch/v1
@@ -235,12 +278,33 @@ spec:
                   value: '{{ BACKUP_S3_BUCKET_NAME }}'
               command: ["/bin/sh", "-c"]
               args: ["python restore_services.py --download{% if not ENABLE_WEB_PROXY %} --exclude=caddy{% endif %}"]
-          {% if ENABLE_WEB_PROXY %}
+              {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES or ENABLE_WEB_PROXY %}
               volumeMounts:
+                {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES %}
+                - mountPath: /data/
+                  name: backup-volume
+                {% endif %}
+                {% if ENABLE_WEB_PROXY %}
                 - mountPath: /caddy/
                   name: data
+                {% endif %}
+              {% endif %}
+          {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES or ENABLE_WEB_PROXY %}
           volumes:
+            {% if BACKUP_K8S_USE_EPHEMERAL_VOLUMES %}
+            - name: backup-volume
+              ephemeral:
+                volumeClaimTemplate:
+                  spec:
+                    accessModes:
+                      - ReadWriteOnce
+                    resources:
+                      requests:
+                        storage: {{ BACKUP_K8S_EPHEMERAL_VOLUME_SIZE }}
+            {% endif %}
+            {% if ENABLE_WEB_PROXY %}
             - name: data
               persistentVolumeClaim:
                 claimName: caddy
+            {% endif %}
           {% endif %}

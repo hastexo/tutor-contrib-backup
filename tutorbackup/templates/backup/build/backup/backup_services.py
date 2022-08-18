@@ -8,6 +8,7 @@ import sys
 import tarfile
 from datetime import datetime
 from subprocess import check_call
+from pathlib import Path
 
 import click
 from botocore.exceptions import ClientError
@@ -22,7 +23,7 @@ MONGODB_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'mongodb_dump')
 CADDY_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'caddy')
 
 date_stamp = datetime.today().strftime("%Y-%m-%d")
-TARFILE = f'/backup/backup.{date_stamp}.tar.xz'
+TARFILE = f'/data/backup/backup.{date_stamp}.tar.xz'
 
 logger = logging.getLogger(__name__)
 
@@ -135,6 +136,11 @@ def caddydump():
 
 def archive(paths):
     outfile = TARFILE
+
+    # Create the subdirectories to the tar file
+    outfile_path = os.path.dirname(outfile)
+    if outfile_path:
+        Path(outfile_path).mkdir(parents=True, exist_ok=True)
 
     logger.info(f"Creating archive {outfile}")
     with tarfile.open(outfile, "w:xz") as tar:

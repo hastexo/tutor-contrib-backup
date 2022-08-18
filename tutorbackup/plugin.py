@@ -21,6 +21,8 @@ config = {
         "K8S_CRONJOB_BACKUP_SCHEDULE": "0 0 * * *",
         "K8S_CRONJOB_RESTORE_ENABLE": False,
         "K8S_CRONJOB_RESTORE_SCHEDULE": "30 0 * * *",
+        "K8S_USE_EPHEMERAL_VOLUMES": False,
+        "K8S_EPHEMERAL_VOLUME_SIZE": "10Gi",
         "S3_HOST": "{{ S3_HOST | default('') }}",
         "S3_PORT": "{{ S3_PORT | default('') }}",
         "S3_REGION_NAME": "{{ S3_REGION | default('') }}",
