@@ -220,7 +220,7 @@ def main(exclude, date, version, download, list_versions):
     logger.addHandler(handler)
     logger.setLevel(loglevel)
 
-    file_name = f'/backup/backup.{date.date()}.tar.xz'
+    file_name = f'/data/backup/backup.{date.date()}.tar.xz'
 
     if list_versions:
         get_versions(file_name, number_of_versions=list_versions)

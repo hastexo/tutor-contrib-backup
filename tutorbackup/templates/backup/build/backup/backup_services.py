@@ -22,7 +22,7 @@ MONGODB_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'mongodb_dump')
 CADDY_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'caddy')
 
 date_stamp = datetime.today().strftime("%Y-%m-%d")
-TARFILE = f'/backup/backup.{date_stamp}.tar.xz'
+TARFILE = f'/data/backup/backup.{date_stamp}.tar.xz'
 
 logger = logging.getLogger(__name__)
 
