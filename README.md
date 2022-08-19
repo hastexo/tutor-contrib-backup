@@ -214,6 +214,32 @@ service, some of these values may be required to set.
   [rgw_dns_name](https://docs.ceph.com/en/latest/radosgw/config-ref/#confval-rgw_dns_name),
   you will need `BACKUP_S3_ADDRESSING_STYLE: path`.
 
+### Selecting the MySQL databases to backup
+
+By default, all databases will be included in the backup. This is the desired behavior 
+in most of the cases.  
+However, in some situations it may be necessary to choose explicitly which databases must 
+be included in the list. For example, when the same MySQL cluster is used for other purposes 
+and holds logical databases for other services, you might not want to backup them also.
+If you are using a cloud provider database as a service, the cluster may include internal databases 
+that the LMS user might not be allowed to access, therefore throwing an error during the backup process.
+Currently there is a 
+[know limitation](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql_rds_import_binlog_ssl_material.html) 
+of AWS Aurora service that will break the backup process and throw an error like this:
+`mysqldump: Couldn't execute 'SHOW CREATE PROCEDURE rds_import_binlog_ssl_material': Failed to load routine mysql.rds_import_binlog_ssl_material. The table mysql.proc is missing, corrupt, or contains bad data`
+
+For these cases, you can limit the MySQL databases to backup using the `BACKUP_MYSQL_DATABASES` setting.
+This setting takes a list of strings with the names of the databases. E.g.:
+```yaml
+BACKUP_MYSQL_DATABASES:
+  - edxapp
+  - notes
+  - ecommerce
+  - discovery
+```
+Remember to include all databases used by the edx-platform, as well as those created
+by the plugins installed.
+
 ## Changelog
 
 For a detailed breakdown of features and fixes in each release, please

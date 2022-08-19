@@ -45,9 +45,19 @@ def mysqldump():
     port = ENV['MYSQL_PORT']
     outfile = MYSQL_DUMPFILE
 
-    logger.info(f"Dumping MySQL databases on {host}:{port} to {outfile}")
+    mysql_databases = ENV.get('MYSQL_DATABASES')
+    if mysql_databases:
+        databases_statement = f"--databases {mysql_databases}"
+        logger.info(f"Dumping MySQL databases {mysql_databases} "
+                    f"on {host}:{port} to {outfile}")
+    else:
+        databases_statement = "--all-databases"
+        logger.info(f"Dumping all MySQL databases "
+                    f"on {host}:{port} to {outfile}")
+
     cmd = ("mysqldump "
-           "--all-databases --add-drop-database --routines "
+           f"{databases_statement} "
+           "--add-drop-database --routines "
            "--events --single-transaction "
            "--quick --quote-names --max-allowed-packet=16M "
            f"--host={host} --port={port} "
