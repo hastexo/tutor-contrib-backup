@@ -1,3 +1,8 @@
+## Unreleased
+
+* [feature] Add the `BACKUP_MYSQL_DATABASES` setting to select the MySQL 
+databases to backup.
+
 ## Version 1.0.0 (2022-08-04)
 
 * [BREAKING CHANGE] Support Tutor 14 and Open edX Nutmeg. This entails

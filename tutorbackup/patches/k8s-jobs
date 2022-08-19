@@ -31,6 +31,10 @@ spec:
               value: '{{ MYSQL_ROOT_USERNAME }}'
             - name: MYSQL_ROOT_PASSWORD
               value: '{{ MYSQL_ROOT_PASSWORD }}'
+            {% if BACKUP_MYSQL_DATABASES %}
+            - name: MYSQL_DATABASES
+              value: {{ BACKUP_MYSQL_DATABASES | join(" ") }}
+            {% endif %}
             - name: MONGODB_HOST
               value: '{{ MONGODB_HOST }}'
             - name: MONGODB_PORT
@@ -104,6 +108,10 @@ spec:
                   value: '{{ MYSQL_ROOT_USERNAME }}'
                 - name: MYSQL_ROOT_PASSWORD
                   value: '{{ MYSQL_ROOT_PASSWORD }}'
+                {% if BACKUP_MYSQL_DATABASES %}
+                - name: MYSQL_DATABASES
+                  value: {{ BACKUP_MYSQL_DATABASES | join(" ") }}
+                {% endif %}
                 - name: MONGODB_HOST
                   value: '{{ MONGODB_HOST }}'
                 - name: MONGODB_PORT
@@ -179,6 +187,10 @@ spec:
                   value: '{{ MYSQL_ROOT_USERNAME }}'
                 - name: MYSQL_ROOT_PASSWORD
                   value: '{{ MYSQL_ROOT_PASSWORD }}'
+                {% if BACKUP_MYSQL_DATABASES %}
+                - name: MYSQL_DATABASES
+                  value: {{ BACKUP_MYSQL_DATABASES | join(" ") }}
+                {% endif %}
                 - name: MONGODB_HOST
                   value: '{{ MONGODB_HOST }}'
                 - name: MONGODB_PORT
