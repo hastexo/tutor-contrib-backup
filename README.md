@@ -162,6 +162,13 @@ limits](https://kubernetes.io/docs/tasks/job/automated-tasks-with-cron-jobs/#job
 for the CronJobs using the `BACKUP_K8S_CRONJOB_HISTORYLIMIT_*` configuration 
 parameters.
 
+### A note on manual restores
+The plugin does not stop services while restoring them. Before doing a manual 
+(that is, not CronJob scheduled) restore, you might consider stopping the Caddy 
+service or taking your site offline by other means. When the restore process is complete, 
+remember to bring the Caddy service (or external load balancer or proxy) back online.
+This prevents your users from encountering errors during the restore process.
+
 Configuration
 -------------
 
