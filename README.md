@@ -1,9 +1,8 @@
 # Backup plugin for Tutor
 
-This is an **experimental** plugin for
-[Tutor](https://docs.tutor.overhang.io) that provides backup and restore 
-functionality for MySQL, MongoDB, and Caddy services in both local and 
-Kubernetes Tutor deployments.
+This is a plugin for [Tutor](https://docs.tutor.overhang.io) that
+provides backup and restore functionality for MySQL, MongoDB, and
+Caddy services in both local and Kubernetes Tutor deployments.
 
 In a local deployment, you can run the backup from the command line.
 The backups are stored as a single compressed tar file, named
