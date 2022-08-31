@@ -1,4 +1,4 @@
-## Unreleased
+## Version 1.1.0 (2022-08-31)
 
 * [feature] Add the `BACKUP_MYSQL_DATABASES` setting to select the MySQL 
 databases to backup.
