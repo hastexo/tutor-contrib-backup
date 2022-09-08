@@ -72,26 +72,53 @@ def mysqldump():
     logger.info(f"Complete. {outfile} is {size} bytes.")
 
 
-def mongodump():
+def get_mongodump_command(database=None):
     host = ENV['MONGODB_HOST']
     port = ENV['MONGODB_PORT']
     outdir = MONGODB_DUMPDIR
 
-    logger.info(f"Dumping MongoDB databases on {host}:{port} to {outdir}")
     cmd = ("mongodump "
            f"--out={outdir} "
            f"--host={host} "
            f"--port={port}")
+
+    if database:
+        cmd += f" --db={database}"
+
     try:
         cmd += (f" --username={ENV['MONGODB_USERNAME']} "
-                f"--password={ENV['MONGODB_PASSWORD']}")
+                f"--password={ENV['MONGODB_PASSWORD']} "
+                "--authenticationDatabase="
+                f"{ENV['MONGODB_AUTHENTICATION_DATABASE']}")
     except KeyError:
         pass
 
-    check_call(cmd,
-               shell=True,
-               stdout=sys.stdout,
-               stderr=sys.stderr)
+    return cmd
+
+
+def mongodump():
+    host = ENV['MONGODB_HOST']
+    port = ENV['MONGODB_PORT']
+    outdir = MONGODB_DUMPDIR
+    mongodb_databases = ENV.get('MONGODB_DATABASES')
+
+    if mongodb_databases:
+        for database in mongodb_databases.split():
+            logger.info(f"Dumping MongoDB database '{database}' "
+                        f"on {host}:{port} to {outdir}.")
+            cmd = get_mongodump_command(database)
+            check_call(cmd,
+                       shell=True,
+                       stdout=sys.stdout,
+                       stderr=sys.stderr)
+    else:
+        logger.info("Dumping all MongoDB databases "
+                    f"on {host}:{port} to {outdir}.")
+        cmd = get_mongodump_command()
+        check_call(cmd,
+                   shell=True,
+                   stdout=sys.stdout,
+                   stderr=sys.stderr)
 
     total_size = get_size(outdir)
     logger.info(f"Complete. {outdir} total size {total_size} bytes.")

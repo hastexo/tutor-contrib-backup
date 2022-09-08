@@ -213,14 +213,14 @@ service, some of these values may be required to set.
   [rgw_dns_name](https://docs.ceph.com/en/latest/radosgw/config-ref/#confval-rgw_dns_name),
   you will need `BACKUP_S3_ADDRESSING_STYLE: path`.
 
-### Selecting the MySQL databases to backup
+### Selecting databases to backup
 
-By default, all MySQL databases will be included in the backup. This is the
-desired behavior in most cases.
+By default, all MySQL and MongoDB databases will be included in the 
+backup. This is the desired behavior in most cases.
 
 However, in some situations it may be necessary to explicitly choose
 which databases must be included in the backup. For example, when the
-same MySQL cluster is used for other purposes and holds logical
+same database cluster is used for other purposes and holds logical
 databases for other services, you might not want to backup all
 databases. In addition, if you are using a cloud provider database as
 a service, the cluster may include internal databases that the LMS
@@ -236,9 +236,10 @@ during the backup process.[^aurora]
   mysql.rds_import_binlog_ssl_material. The table mysql.proc is
   missing, corrupt, or contains bad data.`
 
-In such cases, you can limit the MySQL databases to backup using the
-`BACKUP_MYSQL_DATABASES` setting.  This setting takes a list of
-strings with the names of the databases, such as:
+In such cases, you can specify the MySQL and MongoDB databases you would like
+to back up, using the `BACKUP_MYSQL_DATABASES` and `BACKUP_MONGODB_DATABASES` 
+settings. These settings take a list of strings with the names of the 
+databases, such as:
 
 ```yaml
 BACKUP_MYSQL_DATABASES:
@@ -248,9 +249,19 @@ BACKUP_MYSQL_DATABASES:
   - discovery
 ```
 
+```yaml
+BACKUP_MONGODB_DATABASES:
+  - openedx
+  - cs_comments_service
+```
+
 Remember to include all databases used by
 [edx-platform](https://github.com/openedx/edx-platform), as well as
 those created by any plugins installed.
+
+If your MongoDB instance uses an authentication database name other 
+than `admin`, make sure you provide that with
+`BACKUP_MONGODB_AUTHENTICATION_DATABASE`.
 
 ## Changelog
 
