@@ -1,5 +1,9 @@
 ## Unreleased
 
+* [feature] Add the `BACKUP_MONGODB_DATABASES` setting to select the 
+MongoDB databases to back up. 
+Add `BACKUP_MONGODB_AUTHENTICATION_DATABASE` to override default 
+authentication database name.
 * [refactor] Remove obsolete scripts.
 
 ## Version 1.1.0 (2022-08-31)

@@ -43,6 +43,12 @@ spec:
               value: '{{ MONGODB_USERNAME }}'
             - name: MONGODB_PASSWORD
               value: '{{ MONGODB_PASSWORD }}'{% endif %}
+            {% if BACKUP_MONGODB_DATABASES %}
+            - name: MONGODB_DATABASES
+              value: {{ BACKUP_MONGODB_DATABASES | join(" ") }}
+            {% endif %}
+            - name: MONGODB_AUTHENTICATION_DATABASE
+              value: '{{ BACKUP_MONGODB_AUTHENTICATION_DATABASE }}'
             - name: S3_SIGNATURE_VERSION
               value: '{{ BACKUP_S3_SIGNATURE_VERSION }}'
             - name: S3_ADDRESSING_STYLE
@@ -120,6 +126,12 @@ spec:
                   value: '{{ MONGODB_USERNAME }}'
                 - name: MONGODB_PASSWORD
                   value: '{{ MONGODB_PASSWORD }}'{% endif %}
+                {% if BACKUP_MONGODB_DATABASES %}
+                - name: MONGODB_DATABASES
+                  value: {{ BACKUP_MONGODB_DATABASES | join(" ") }}
+                {% endif %}
+                - name: MONGODB_AUTHENTICATION_DATABASE
+                  value: '{{ BACKUP_MONGODB_AUTHENTICATION_DATABASE }}'
                 - name: S3_SIGNATURE_VERSION
                   value: '{{ BACKUP_S3_SIGNATURE_VERSION }}'
                 - name: S3_ADDRESSING_STYLE
@@ -199,6 +211,12 @@ spec:
                   value: '{{ MONGODB_USERNAME }}'
                 - name: MONGODB_PASSWORD
                   value: '{{ MONGODB_PASSWORD }}'{% endif %}
+                {% if BACKUP_MONGODB_DATABASES %}
+                - name: MONGODB_DATABASES
+                  value: {{ BACKUP_MONGODB_DATABASES | join(" ") }}
+                {% endif %}
+                - name: MONGODB_AUTHENTICATION_DATABASE
+                  value: '{{ BACKUP_MONGODB_AUTHENTICATION_DATABASE }}'
                 - name: S3_SIGNATURE_VERSION
                   value: '{{ BACKUP_S3_SIGNATURE_VERSION }}'
                 - name: S3_ADDRESSING_STYLE

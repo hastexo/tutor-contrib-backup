@@ -31,6 +31,8 @@ config = {
         "S3_SECRET_ACCESS_KEY": "{{ OPENEDX_AWS_SECRET_ACCESS_KEY }}",
         "S3_BUCKET_NAME": "backups",
         "MYSQL_DATABASES": [],
+        "MONGODB_DATABASES": [],
+        "MONGODB_AUTHENTICATION_DATABASE": "admin",
     }
 }
 
