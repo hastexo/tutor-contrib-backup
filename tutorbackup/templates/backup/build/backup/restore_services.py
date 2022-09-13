@@ -7,6 +7,7 @@ import shutil
 import sys
 import tarfile
 from datetime import datetime
+from pathlib import Path
 from subprocess import check_call
 
 import click
@@ -109,6 +110,11 @@ def extract(file_name):
 
 def download_from_s3(file_name, version_id=None):
     from s3_client import S3_CLIENT, IntegrityError
+
+    # Create the subdirectories to the tar file
+    outfile_path = os.path.dirname(file_name)
+    if outfile_path:
+        Path(outfile_path).mkdir(parents=True, exist_ok=True)
 
     bucket = ENV['S3_BUCKET_NAME']
 
