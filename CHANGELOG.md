@@ -1,4 +1,4 @@
-## Unreleased
+## Version 1.2.0 (2022-09-21)
 
 * [feature] Add the `BACKUP_MONGODB_DATABASES` setting to select the 
 MongoDB databases to back up. 
