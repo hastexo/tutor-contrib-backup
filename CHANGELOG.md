@@ -5,7 +5,7 @@ MongoDB databases to back up.
 Add `BACKUP_MONGODB_AUTHENTICATION_DATABASE` to override default 
 authentication database name.
 * [refactor] Remove obsolete scripts.
-* [fix] Use ephemeral volumes in K8s for data volume
+* [feature] Use ephemeral volumes in K8s for data volume
 * [fix] When calculating the checksum for large backup tar files, all the file
 was read into memory. This could cause pods to be killed when backing
 up large databases. Fix that by reading in the tar file in chunks when
