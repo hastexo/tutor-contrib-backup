@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import hashlib
 import logging
 import os
 import shutil
@@ -109,7 +108,7 @@ def extract(file_name):
 
 
 def download_from_s3(file_name, version_id=None):
-    from s3_client import S3_CLIENT, IntegrityError
+    from s3_client import S3_CLIENT, IntegrityError, calculate_checksum
 
     # Create the subdirectories to the tar file
     outfile_path = os.path.dirname(file_name)
@@ -150,8 +149,7 @@ def download_from_s3(file_name, version_id=None):
             version_id_correct = True
 
         received_checksum = obj_metadata['Metadata']['checksum-md5']
-        calculated_checksum = hashlib.md5(
-            open(file_name, 'rb').read()).hexdigest()
+        calculated_checksum = calculate_checksum(file_name)
         checksum_correct = (received_checksum == calculated_checksum)
 
         size = os.path.getsize(file_name)
