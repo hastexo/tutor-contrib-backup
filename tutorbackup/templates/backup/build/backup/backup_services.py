@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import hashlib
 import logging
 import os
 import shutil
@@ -152,15 +151,14 @@ def archive(paths):
 
 
 def upload_to_s3():
-    from s3_client import S3_CLIENT, IntegrityError
+    from s3_client import S3_CLIENT, IntegrityError, calculate_checksum
 
     bucket = ENV['S3_BUCKET_NAME']
     file_name = TARFILE
 
+    logger.info(f"Calculating checksum for {file_name}")
+    calculated_checksum = calculate_checksum(file_name)
     logger.info(f"Uploading {file_name} to S3 bucket {bucket}")
-    calculated_checksum = hashlib.md5(
-        open(file_name, 'rb').read()).hexdigest()
-
     try:
         S3_CLIENT.upload_file(
             file_name,
