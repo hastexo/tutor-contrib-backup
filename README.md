@@ -221,6 +221,10 @@ service, some of these values may be required to set.
 * For a Ceph Object Gateway that doesn’t set
   [rgw_dns_name](https://docs.ceph.com/en/latest/radosgw/config-ref/#confval-rgw_dns_name),
   you will need `BACKUP_S3_ADDRESSING_STYLE: path`.
+* When dealing with very large databases, restoring MongoDB may consume more memory than available and the process may break.
+  In this situation, you can set `BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS` to `-j 1` to 
+  [limit the number of collections](https://www.mongodb.com/docs/v4.2/reference/program/mongorestore/#cmdoption-mongorestore-numparallelcollections)
+  that are restored in parallel in order to save memory.
 
 ### Selecting databases to backup
 

@@ -1,3 +1,6 @@
+## Unreleased
+* [feature] Add the `BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS` setting.
+
 ## Version 1.2.0 (2022-09-21)
 
 * [feature] Add the `BACKUP_MONGODB_DATABASES` setting to select the 

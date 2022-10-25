@@ -19,6 +19,7 @@ backup-job:
     - MONGODB_PASSWORD={{ MONGODB_PASSWORD }}
     {% endif %}
     - MONGODB_AUTHENTICATION_DATABASE={{ BACKUP_MONGODB_AUTHENTICATION_DATABASE }}
+    - MONGORESTORE_ADDITIONAL_OPTIONS={{ BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS }}
   volumes:
     - ../backup:/data/backup
     {% if ENABLE_HTTPS and ENABLE_WEB_PROXY %}- ../../data/caddy:/caddy{% endif %}

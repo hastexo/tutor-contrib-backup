@@ -49,6 +49,8 @@ spec:
             {% endif %}
             - name: MONGODB_AUTHENTICATION_DATABASE
               value: '{{ BACKUP_MONGODB_AUTHENTICATION_DATABASE }}'
+            - name: MONGORESTORE_ADDITIONAL_OPTIONS
+              value: '{{ BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS }}'
             - name: S3_SIGNATURE_VERSION
               value: '{{ BACKUP_S3_SIGNATURE_VERSION }}'
             - name: S3_ADDRESSING_STYLE

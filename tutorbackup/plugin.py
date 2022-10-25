@@ -35,6 +35,7 @@ config = {
         "MYSQL_DATABASES": [],
         "MONGODB_DATABASES": [],
         "MONGODB_AUTHENTICATION_DATABASE": "admin",
+        "MONGORESTORE_ADDITIONAL_OPTIONS": "",
     }
 }
 

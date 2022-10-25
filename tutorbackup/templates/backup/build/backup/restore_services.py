@@ -66,6 +66,7 @@ def restore_mongodb():
     cmd = ("mongorestore "
            "--stopOnError --drop "
            f"--host={host} --port={port} "
+           f"{ENV['MONGORESTORE_ADDITIONAL_OPTIONS']} "
            f"{dump_dir}"
            )
     try:
