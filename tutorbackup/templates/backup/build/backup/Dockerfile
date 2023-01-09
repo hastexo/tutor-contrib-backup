@@ -8,7 +8,7 @@ RUN curl -fsSL https://www.mongodb.org/static/pgp/server-4.2.asc | gpg --dearmor
     apt-get update && \
     apt-get install -y --no-install-recommends default-mysql-client mongodb-org-tools && \
     pip install --upgrade pip && \
-    pip install boto3 click && \
+    pip install boto3 tarsafe click && \
     mkdir data backup
 
 COPY backup_services.py .

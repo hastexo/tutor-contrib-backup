@@ -4,13 +4,13 @@ import logging
 import os
 import shutil
 import sys
-import tarfile
 from datetime import datetime
 from pathlib import Path
 from subprocess import check_call
 
 import click
 from botocore.exceptions import ClientError
+from tarsafe import TarSafe
 
 
 ENV = os.environ
@@ -98,7 +98,7 @@ def extract(file_name):
 
     logger.info(f"Extracting archive {file_name} to {out_dir}")
     try:
-        with tarfile.open(file_name, "r:xz") as tar:
+        with TarSafe.open(file_name, "r:xz") as tar:
             tar.extractall()
     except FileNotFoundError as e:
         logger.exception(e, exc_info=True)
