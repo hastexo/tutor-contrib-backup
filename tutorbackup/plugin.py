@@ -7,7 +7,7 @@ import click
 from tutor import hooks
 from tutor import config as tutor_config
 from tutor.commands.local import local as local_command_group
-from tutor.commands.k8s import k8s as k8s_command_group, K8sJobRunner
+from tutor.commands.k8s import k8s as k8s_command_group, K8sTaskRunner
 
 
 config = {
@@ -68,7 +68,7 @@ def backup(context):
         command += " --exclude=caddy"
 
     job_runner = context.job_runner(config)
-    job_runner.run_job(service="backup", command=command)
+    job_runner.run_task(service="backup", command=command)
 
 
 @local_command_group.command(help="Restore MySQL, MongoDB, and Caddy")
@@ -96,7 +96,7 @@ def restore(context, exclude, date):
         command += f" --exclude={service}"
 
     job_runner = context.job_runner(config)
-    job_runner.run_job(service="backup", command=command)
+    job_runner.run_task(service="backup", command=command)
 
 
 @k8s_command_group.command(help="Backup MySQL, MongoDB, and Caddy")
@@ -109,8 +109,8 @@ def backup(context):  # noqa: F811
     if not caddy_data_directory_exists:
         command += " --exclude=caddy"
 
-    job_runner = K8sJobRunner(context.root, config)
-    job_runner.run_job(service="backup-restore", command=command)
+    job_runner = K8sTaskRunner(context.root, config)
+    job_runner.run_task(service="backup-restore", command=command)
 
 
 @k8s_command_group.command(help="restore MySQL, MongoDB, and Caddy")
@@ -147,8 +147,8 @@ def restore(context, date, version, exclude, list_versions):  # noqa: F811
         for service in exclude:
             command += f" --exclude={service}"
 
-    job_runner = K8sJobRunner(context.root, config)
-    job_runner.run_job(service="backup-restore", command=command)
+    job_runner = K8sTaskRunner(context.root, config)
+    job_runner.run_task(service="backup-restore", command=command)
 
 
 # Add the "templates" folder as a template root
