@@ -1,4 +1,4 @@
-## Unreleased
+## Version 2.0.0 (2023-03-15)
 
 * [BREAKING CHANGE] Add support for Tutor 15 and Open edX Olive.
   Tutor version 15.0.0 includes changes to the implementation of
