@@ -1,3 +1,9 @@
+## Unreleased
+
+* [fix] Add the `BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS` setting to
+  the definition of the Kubernetes restore cron job (in addition to
+  that of the ad-hoc Kubernetes job).
+
 ## Version 2.0.0 (2023-03-15)
 
 * [BREAKING CHANGE] Add support for Tutor 15 and Open edX Olive.
