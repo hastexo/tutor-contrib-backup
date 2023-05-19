@@ -1,4 +1,4 @@
-## Unreleased
+## Version 2.0.1 (2023-05-19)
 
 * [fix] Add the `BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS` setting to
   the definition of the Kubernetes restore cron job (in addition to
