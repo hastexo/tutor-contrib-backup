@@ -1,3 +1,7 @@
+## Unreleased
+
+* [Enhancement] Support Tutor 16, Open edX Palm and Python 3.11.
+
 ## Version 2.0.1 (2023-05-19)
 
 * [fix] Add the `BACKUP_MONGORESTORE_ADDITIONAL_OPTIONS` setting to
