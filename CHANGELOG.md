@@ -1,4 +1,4 @@
-## Unreleased
+## Version 2.1.0 (2023-08-22)
 
 * [Enhancement] Support Tutor 16, Open edX Palm and Python 3.11.
 

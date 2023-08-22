@@ -44,7 +44,7 @@ appropriate one:
 
 ## Installation
 
-    pip install git+https://github.com/hastexo/tutor-contrib-backup@v2.0.1
+    pip install git+https://github.com/hastexo/tutor-contrib-backup@v2.1.0
 
 ## Usage
 
