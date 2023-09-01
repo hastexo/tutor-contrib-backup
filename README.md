@@ -258,7 +258,7 @@ databases, such as:
 
 ```yaml
 BACKUP_MYSQL_DATABASES:
-  - edxapp
+  - openedx
   - notes
   - ecommerce
   - discovery
