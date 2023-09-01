@@ -251,10 +251,9 @@ during the backup process.[^aurora]
   mysql.rds_import_binlog_ssl_material. The table mysql.proc is
   missing, corrupt, or contains bad data.`
 
-In such cases, you can specify the MySQL and MongoDB databases you would like
-to back up, using the `BACKUP_MYSQL_DATABASES` and `BACKUP_MONGODB_DATABASES` 
-settings. These settings take a list of strings with the names of the 
-databases, such as:
+In such cases, you can specify the MySQL databases you would like to
+back up, using the `BACKUP_MYSQL_DATABASES` option. This option takes
+a list of strings with the names of the databases, such as:
 
 ```yaml
 BACKUP_MYSQL_DATABASES:
@@ -264,15 +263,25 @@ BACKUP_MYSQL_DATABASES:
   - discovery
 ```
 
+Remember to include all databases used by
+[edx-platform](https://github.com/openedx/edx-platform), as well as
+those created by any plugins installed.
+
+You may or may not choose to include the internal `mysql` database in
+this list. If you have made sure that all your database users and
+privileges are managed by Tutor (as you should), and none have been
+created manually, then it should be safe to not include `mysql` in the
+`BACKUP_MYSQL_DATABASES` list. However, if you omit
+`BACKUP_MYSQL_DATABASES` from your configuration altogether, then the
+plugin does include the `mysql` database in the backup.
+
+For MongoDB databases, the corresponding configuration option is:
+
 ```yaml
 BACKUP_MONGODB_DATABASES:
   - openedx
   - cs_comments_service
 ```
-
-Remember to include all databases used by
-[edx-platform](https://github.com/openedx/edx-platform), as well as
-those created by any plugins installed.
 
 If your MongoDB instance uses an authentication database name other 
 than `admin`, make sure you provide that with
