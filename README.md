@@ -278,6 +278,17 @@ If your MongoDB instance uses an authentication database name other
 than `admin`, make sure you provide that with
 `BACKUP_MONGODB_AUTHENTICATION_DATABASE`.
 
+## Using this plugin with service version upgrades
+
+In general, you should be able to use this plugin even when you are
+upgrading to a new MySQL, MongoDB, or Caddy version. This is something
+that commonly happens as a result of a new Open edX/Tutor major
+release.
+
+However, you need to make sure that after restoring a backup from a
+prior version, you run `tutor local init` or `tutor k8s init` in order
+to ensure that any required in-place data modifications also rerun.
+
 ## Changelog
 
 For a detailed breakdown of features and fixes in each release, please
