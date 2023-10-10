@@ -188,6 +188,7 @@ Configuration
 * `BACKUP_K8S_CRONJOB_RESTORE_ENABLE` (default: `false`, periodic restore is disabled.)
 * `BACKUP_K8S_CRONJOB_RESTORE_SCHEDULE` (default: `"30 0 * * *"`, once a day at 30 mins past
    midnight)
+* `BACKUP_K8S_CRONJOB_CONCURRENCYPOLICY` (default: `"Forbid"`, see [the Kubernetes documentation](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#concurrency-policy) for other available options)
 * `BACKUP_K8S_USE_EPHEMERAL_VOLUMES` (default: `false`)
 * `BACKUP_K8S_EPHEMERAL_VOLUME_SIZE` (default: `10Gi`)
 

@@ -1,3 +1,11 @@
+## Unreleased
+
+* [fix] Avoid running Kubernetes CronJob instances concurrently by
+  default: add the `BACKUP_K8S_CRONJOB_CONCURRENCYPOLICY` setting
+  and default it to `Forbid` (rather than
+  [the Kubernetes default](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#concurrency-policy),
+  `Allow`).
+
 ## Version 2.1.0 (2023-08-22)
 
 * [Enhancement] Support Tutor 16, Open edX Palm and Python 3.11.
