@@ -1,4 +1,4 @@
-## Unreleased
+## Version 2.1.1 (2023-10-12)
 
 * [fix] Avoid running Kubernetes CronJob instances concurrently by
   default: add the `BACKUP_K8S_CRONJOB_CONCURRENCYPOLICY` setting
