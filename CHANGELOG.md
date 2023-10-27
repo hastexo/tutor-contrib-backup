@@ -1,3 +1,10 @@
+## Unreleased
+
+* [fix]: Switch the MySQL client tools to version 8.0 and the MongoDB
+  client tools to version 4.4.
+
+This version drops compatibility with Open edX Olive and Tutor 15.
+
 ## Version 2.1.1 (2023-10-12)
 
 * [fix] Avoid running Kubernetes CronJob instances concurrently by
