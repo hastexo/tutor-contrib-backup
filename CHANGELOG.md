@@ -1,4 +1,4 @@
-## Unreleased
+## Version 3.0.0 (2023-10-27)
 
 * [fix]: Switch the MySQL client tools to version 8.0 and the MongoDB
   client tools to version 4.4.
