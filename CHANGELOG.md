@@ -1,6 +1,11 @@
+## Unreleased
+
+* [fix] Run `mysqladmin flush-logs` immediately after a successful
+  MySQL restore.
+
 ## Version 3.0.0 (2023-10-27)
 
-* [fix]: Switch the MySQL client tools to version 8.0 and the MongoDB
+* [fix] Switch the MySQL client tools to version 8.0 and the MongoDB
   client tools to version 4.4.
 
 This version drops compatibility with Open edX Olive and Tutor 15.

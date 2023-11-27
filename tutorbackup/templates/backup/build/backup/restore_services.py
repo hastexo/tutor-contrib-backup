@@ -43,17 +43,27 @@ def restore_mysql():
     dump_file = MYSQL_DUMPFILE
 
     logger.info(f"Restoring MySQL databases on {host}:{port} from {dump_file}")
-    cmd = ("mysql "
-           f"--host={host} --port={port} "
-           f"--user={user} --password={password}")
+    mysql_cmd = ("mysql "
+                 f"--host={host} --port={port} "
+                 f"--user={user} --password={password}")
     with open(dump_file, 'rb') as dump:
-        check_call(cmd,
+        check_call(mysql_cmd,
                    shell=True,
                    stdin=dump,
                    stdout=sys.stdout,
                    stderr=sys.stderr)
-
     logger.info("MySQL restored.")
+
+    logger.info(f"Flushing logs on {host}:{port}")
+    mysqladmin_cmd = ("mysqladmin "
+                      f"--host={host} --port={port} "
+                      f"--user={user} --password={password} "
+                      "flush-logs")
+    check_call(mysqladmin_cmd,
+               shell=True,
+               stdout=sys.stdout,
+               stderr=sys.stderr)
+    logger.info("Logs flushed.")
 
 
 def restore_mongodb():
