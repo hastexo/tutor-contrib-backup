@@ -1,4 +1,4 @@
-## Unreleased
+## Version 3.0.1 (2023-11-27)
 
 * [fix] Run `mysqladmin flush-logs` immediately after a successful
   MySQL restore.
