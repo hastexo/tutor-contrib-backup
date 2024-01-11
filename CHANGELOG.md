@@ -1,3 +1,7 @@
+## Unreleased
+
+* [Enhancement] Support Tutor 17 and Open edX Quince.
+
 ## Version 3.0.1 (2023-11-27)
 
 * [fix] Run `mysqladmin flush-logs` immediately after a successful
