@@ -2,7 +2,10 @@ from datetime import datetime
 from .__about__ import __version__
 from glob import glob
 import os
-import pkg_resources
+# When Tutor drops support for Python 3.8, we'll need to update this to:
+# from importlib import resources as importlib_resources
+# See: https://github.com/overhangio/tutor/issues/966#issuecomment-1938681102
+import importlib_resources
 import click
 from tutor import hooks
 from tutor import config as tutor_config
@@ -154,7 +157,7 @@ def restore(context, date, version, exclude, list_versions):  # noqa: F811
 
 # Add the "templates" folder as a template root
 hooks.Filters.ENV_TEMPLATE_ROOTS.add_item(
-    pkg_resources.resource_filename("tutorbackup", "templates")
+    str(importlib_resources.files("tutorbackup") / "templates")
 )
 # Render the "build" and "apps" folders
 hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
@@ -164,12 +167,9 @@ hooks.Filters.ENV_TEMPLATE_TARGETS.add_items(
     ],
 )
 # Load patches from files
-for path in glob(
-    os.path.join(
-        pkg_resources.resource_filename("tutorbackup", "patches"),
-        "*",
-    )
-):
+for path in glob(str(
+        importlib_resources.files("tutorbackup") / "patches" / "*")):
+
     with open(path, encoding="utf-8") as patch_file:
         hooks.Filters.ENV_PATCHES.add_item(
             (os.path.basename(path), patch_file.read())
