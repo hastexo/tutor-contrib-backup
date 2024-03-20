@@ -21,6 +21,8 @@ MYSQL_DUMPFILE = os.path.join(DUMP_DIRECTORY, 'mysql_dump.sql')
 MONGODB_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'mongodb_dump')
 CADDY_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'caddy')
 
+MYSQL_DBS_LIST_FILE = os.path.join(DUMP_DIRECTORY, 'mysql_dbs.txt')
+
 date_stamp = datetime.today().strftime("%Y-%m-%d")
 TARFILE = f'/data/backup/backup.{date_stamp}.tar.xz'
 
@@ -51,8 +53,30 @@ def mysqldump():
         logger.info(f"Dumping MySQL databases {mysql_databases} "
                     f"on {host}:{port} to {outfile}")
     else:
-        databases_statement = "--all-databases"
-        logger.info(f"Dumping all MySQL databases "
+       dblist_file = MYSQL_DBS_LIST_FILE
+        sql_query="""SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN
+             ('mysql', 'sys', 'performance_schema', 'information_schema')"""
+
+        mysql_cmd = ("mysql "
+            f"--host={host} --port={port} "
+            f"--user={user} --password={password}"
+            f""" -ANe"{sql_query}" > {dblist_file}""")
+
+        logger.info("Creating file with the list of database schemas to backup")
+        check_call(mysql_cmd,
+                shell=True,
+                stdout=sys.stdout,
+                stderr=sys.stderr)
+
+        logger.info("Reading the list of databases to backup")
+        databases = ""
+        with open(dblist_file, 'r') as dblist:
+            for line in dblist:
+                databases = databases+line.strip()+" "
+
+#        databases_statement = "--all-databases"
+        databases_statement = f"--databases {databases}"
+        logger.info(f"Dumping MySQL databases "
                     f"on {host}:{port} to {outfile}")
 
     cmd = ("mysqldump "
