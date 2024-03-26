@@ -6,7 +6,7 @@ import shutil
 import sys
 import tarfile
 from datetime import datetime
-from subprocess import check_call
+from subprocess import check_call, check_output, STDOUT, CalledProcessError
 from pathlib import Path
 
 import click
@@ -20,8 +20,6 @@ DUMP_DIRECTORY = '/data'
 MYSQL_DUMPFILE = os.path.join(DUMP_DIRECTORY, 'mysql_dump.sql')
 MONGODB_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'mongodb_dump')
 CADDY_DUMPDIR = os.path.join(DUMP_DIRECTORY, 'caddy')
-
-MYSQL_DBS_LIST_FILE = os.path.join(DUMP_DIRECTORY, 'mysql_dbs.txt')
 
 date_stamp = datetime.today().strftime("%Y-%m-%d")
 TARFILE = f'/data/backup/backup.{date_stamp}.tar.xz'
@@ -46,6 +44,7 @@ def mysqldump():
     host = ENV['MYSQL_HOST']
     port = ENV['MYSQL_PORT']
     outfile = MYSQL_DUMPFILE
+    dblist = []
 
     mysql_databases = ENV.get('MYSQL_DATABASES')
     if mysql_databases:
@@ -53,28 +52,23 @@ def mysqldump():
         logger.info(f"Dumping MySQL databases {mysql_databases} "
                     f"on {host}:{port} to {outfile}")
     else:
-        dblist_file = MYSQL_DBS_LIST_FILE
         sql_query="""SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN
              ('mysql', 'sys', 'performance_schema', 'information_schema')"""
 
-        mysql_cmd = ("mysql "
-            f"--host={host} --port={port} "
-            f"--user={user} --password={password}"
-            f""" -ANe"{sql_query}" > {dblist_file}""")
+        mysql_cmd = (f"mysql --host={host} --port={port} --user={user} --password={password} -BANe \"{sql_query}\" ")
 
-        logger.info("Creating file with the list of database schemas to backup")
-        check_call(mysql_cmd,
-                shell=True,
-                stdout=sys.stdout,
-                stderr=sys.stderr)
+        logger.info("Retrieving the list of database schemas to backup")
+        try:
+            dbout = check_output([mysql_cmd], stderr=STDOUT, timeout=5, shell=True, universal_newlines=True)
+        except CalledProcessError as e:
+            logger.error("MySQL Command Status : FAIL", e.returncode, e.output)
+        else:
+            # The element at position [0] is the following message, so we have to exclude it from the schemas list:
+            # "mysql: [Warning] Using a password on the command line interface can be insecure."
+            dblist = dbout.splitlines()[1:]
 
-        logger.info("Reading the list of databases to backup")
-        databases = ""
-        with open(dblist_file, 'r') as dblist:
-            for line in dblist:
-                databases = databases+line.strip()+" "
+        databases = " ".join(dblist)
 
-#        databases_statement = "--all-databases"
         databases_statement = f"--databases {databases}"
         logger.info(f"Dumping MySQL databases "
                     f"on {host}:{port} to {outfile}")
