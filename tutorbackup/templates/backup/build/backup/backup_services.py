@@ -53,7 +53,7 @@ def mysqldump():
         logger.info(f"Dumping MySQL databases {mysql_databases} "
                     f"on {host}:{port} to {outfile}")
     else:
-       dblist_file = MYSQL_DBS_LIST_FILE
+        dblist_file = MYSQL_DBS_LIST_FILE
         sql_query="""SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN
              ('mysql', 'sys', 'performance_schema', 'information_schema')"""
 
