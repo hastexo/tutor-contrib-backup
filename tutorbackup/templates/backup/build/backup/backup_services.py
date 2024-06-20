@@ -12,6 +12,10 @@ from pathlib import Path
 import click
 from botocore.exceptions import ClientError
 
+try:
+    from distutils.util import strtobool  # pre-3.12
+except ImportError:
+    from setuptools.distutils.util import strtobool  # 3.12+
 
 ENV = os.environ
 
@@ -43,6 +47,7 @@ def mysqldump():
     password = ENV['MYSQL_ROOT_PASSWORD']
     host = ENV['MYSQL_HOST']
     port = ENV['MYSQL_PORT']
+    single_transaction = bool(strtobool(ENV['MYSQL_SINGLE_TRANSACTION']))
     outfile = MYSQL_DUMPFILE
 
     mysql_databases = ENV.get('MYSQL_DATABASES')
@@ -58,10 +63,14 @@ def mysqldump():
     cmd = ("mysqldump "
            f"{databases_statement} "
            "--add-drop-database --routines "
-           "--events --single-transaction "
+           "--events "
            "--quick --quote-names --max-allowed-packet=16M "
            f"--host={host} --port={port} "
            f"--user={user} --password={password}")
+
+    if single_transaction:
+        cmd += " --single-transaction"
+
     with open(outfile, 'wb') as out:
         check_call(cmd,
                    shell=True,

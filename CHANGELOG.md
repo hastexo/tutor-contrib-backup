@@ -1,3 +1,7 @@
+## Unreleased
+
+* [Enhancement] Add options to opt-out single-transaction and flush logs in mysql
+
 ## Version 3.2.0 (2024-04-05)
 * [Enhancement] Support Python 3.12.
 

@@ -12,6 +12,10 @@ from subprocess import check_call
 import click
 from botocore.exceptions import ClientError
 
+try:
+    from distutils.util import strtobool  # pre-3.12
+except ImportError:
+    from setuptools.distutils.util import strtobool  # 3.12+
 
 ENV = os.environ
 
@@ -40,6 +44,7 @@ def restore_mysql():
     password = ENV['MYSQL_ROOT_PASSWORD']
     host = ENV['MYSQL_HOST']
     port = ENV['MYSQL_PORT']
+    flush_logs = bool(strtobool(ENV['MYSQL_FLUSH_LOGS']))
     dump_file = MYSQL_DUMPFILE
 
     logger.info(f"Restoring MySQL databases on {host}:{port} from {dump_file}")
@@ -54,16 +59,17 @@ def restore_mysql():
                    stderr=sys.stderr)
     logger.info("MySQL restored.")
 
-    logger.info(f"Flushing logs on {host}:{port}")
-    mysqladmin_cmd = ("mysqladmin "
-                      f"--host={host} --port={port} "
-                      f"--user={user} --password={password} "
-                      "flush-logs")
-    check_call(mysqladmin_cmd,
-               shell=True,
-               stdout=sys.stdout,
-               stderr=sys.stderr)
-    logger.info("Logs flushed.")
+    if flush_logs:
+        logger.info(f"Flushing logs on {host}:{port}")
+        mysqladmin_cmd = ("mysqladmin "
+                          f"--host={host} --port={port} "
+                          f"--user={user} --password={password} "
+                          "flush-logs")
+        check_call(mysqladmin_cmd,
+                   shell=True,
+                   stdout=sys.stdout,
+                   stderr=sys.stderr)
+        logger.info("Logs flushed.")
 
 
 def restore_mongodb():

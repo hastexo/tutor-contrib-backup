@@ -40,6 +40,8 @@ config = {
         "MONGODB_DATABASES": [],
         "MONGODB_AUTHENTICATION_DATABASE": "admin",
         "MONGORESTORE_ADDITIONAL_OPTIONS": "",
+        "MYSQL_SINGLE_TRANSACTION": True,
+        "MYSQL_FLUSH_LOGS": True,
     }
 }
 
