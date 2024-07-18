@@ -37,6 +37,7 @@ appropriate one:
 | Olive            | `>=15.0, <16`     | `main`        | 2.x.x          |
 | Palm             | `>=16.0, <17`     | `main`        | 3.x.x          |
 | Quince           | `>=17.0, <18`     | `main`        | 3.x.x          |
+| Redwood          | `>=18.0, <19`     | `main`        | 3.x.x          |
 
 [^1]: For Open edX Maple and Tutor 13, you must run version 13.2.0 or
     later. That is because this plugin uses the Tutor v1 plugin API,
