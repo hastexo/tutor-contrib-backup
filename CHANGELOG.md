@@ -1,4 +1,4 @@
-## Unreleased
+## Version 3.3.0 (2024-07-31)
 
 * [Enhancement] Support Tutor 18 and Open edX Redwood.
 * [Enhancement] Add options to opt-out single-transaction and flush logs in mysql
