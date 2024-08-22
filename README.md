@@ -290,26 +290,18 @@ If your MongoDB instance uses an authentication database name other
 than `admin`, make sure you provide that with
 `BACKUP_MONGODB_AUTHENTICATION_DATABASE`.
 
+## Opting out of single-transaction backups and flushing logs
 
-## Opting out single-transaction and flush logs
+In certain cloud MySQL services, like AWS Aurora, it might be forbidden (even for the `root` user) to lock the database.
+In these cases you might get errors like `Couldn't execute 'FLUSH TABLES WITH READ LOCK': Access denied for user`. 
+This is caused by using the `single-transaction` option in MySQL dumps, and flushing logs after restoring.
 
-In certain cloud MySQL services, like AWS Aurora, it might be forbidden
-even for the root user to lock the database.
-In these cases you might get errors like `Couldn't execute 'FLUSH TABLES 
-WITH READ LOCK': Access denied for user`. 
-This is caused by using the `single-transaction` option in mysql dumps and 
-flushing logs after restoring.
+To overcome these issues, you can set `BACKUP_MYSQL_SINGLE_TRANSACTION` and `BACKUP_MYSQL_FLUSH_LOGS` to `false`. 
+Both values are `true` by default.
+`BACKUP_MYSQL_SINGLE_TRANSACTION` controls the use of `--single-transaction` option in the `mysqldump` command, while `BACKUP_MYSQL_FLUSH_LOGS` enables or disables issuing `mysqladmin flush-logs` after restoring the database.
 
-To overcome these issues you can now set `BACKUP_MYSQL_SINGLE_TRANSACTION` 
-and `BACKUP_MYSQL_FLUSH_LOGS` to `false`. Both values are `true` by default.
-`BACKUP_MYSQL_SINGLE_TRANSACTION` controls the use of `--single-transaction` 
-option in the `mysqldump` command, while `BACKUP_MYSQL_FLUSH_LOGS` prevents
-issuing the `mysqladmin flush-logs` after restoring the DB.
-
-Please note that doing this will cause the MySQL db to be dumped without 
-locking the tables, which might result in corrupted backup archives.
-If you set `BACKUP_MYSQL_FLUSH_LOGS` to `false` we recommend to stop all services 
-before starting the backup process.
+Please note that doing this will cause the MySQL database to be dumped without locking the tables, which might result in inconsistent backup archives.
+If you set `BACKUP_MYSQL_FLUSH_LOGS` to `false`, we recommend to stop all services before starting the backup process.
 
 ## Using this plugin with service version upgrades
 
