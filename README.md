@@ -247,14 +247,10 @@ a service, the cluster may include internal databases that the LMS
 user might not be allowed to access, thus throwing an error
 during the backup process.[^aurora]
 
-[^aurora]: There is a known limitation in [certain configurations of
-  AWS
-  Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql_rds_import_binlog_ssl_material.html)
-  in which an attempt to back up the internal `mysql` database will
-  result in an error: `mysqldump: Couldn't execute 'SHOW CREATE
-  PROCEDURE rds_import_binlog_ssl_material': Failed to load routine
-  mysql.rds_import_binlog_ssl_material. The table mysql.proc is
-  missing, corrupt, or contains bad data.`
+[^aurora]: There is a known limitation in [certain configurations of AWS Aurora](https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/mysql_rds_import_binlog_ssl_material.html) in which an attempt to back up the internal `mysql` database will result in an error:
+           ```
+           mysqldump: Couldn't execute 'SHOW CREATE PROCEDURE rds_import_binlog_ssl_material': Failed to load routine mysql.rds_import_binlog_ssl_material. The table mysql.proc is missing, corrupt, or contains bad data.
+           ```
 
 In such cases, you can specify the MySQL databases you would like to
 back up, using the `BACKUP_MYSQL_DATABASES` option. This option takes
