@@ -61,9 +61,27 @@ parameters to your Tutor environment:
 
     tutor config save
 
-Before starting Tutor, build the Docker image:
+### Building the image
+
+In order to build and push the local image, you will need to point your Docker image build process to a local registry.
+
+You can do this in one of two ways:
+
+1. You already set the Tutor `DOCKER_REGISTRY` option.
+   In this case, this plugin will push the `backup` image to your previously configured registry.
+2. You override just the `BACKUP_DOCKER_IMAGE` configuration value, for example:
+   ```
+   tutor config save --set BACKUP_DOCKER_IMAGE=localhost:5000/backup:v3.3.0
+   ```
+   Substitute the correct registry prefix if, rather than using a local instance of the [Distribution Registry](https://github.com/distribution/distribution), you are using a container registry provided by [GitHub](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry), [GitLab](https://docs.gitlab.com/ee/user/packages/container_registry/), [Harbor](https://goharbor.io/), etc.
+
+Then, build the Docker image:
 
     tutor images build backup
+
+And finally, push it to your local registry:
+
+    tutor images push backup
 
 ### In a Tutor local deployment:
 
@@ -181,8 +199,13 @@ service or taking your site offline by other means. When the restore process is 
 remember to bring the Caddy service (or external load balancer or proxy) back online.
 This prevents your users from encountering errors during the restore process.
 
-Configuration
--------------
+## Configuration
+
+### General options
+
+* `BACKUP_DOCKER_IMAGE` (default: `<DOCKER_REGISTRY>backup:v3.3.0`, relative to `DOCKER_REGISTRY` as defined by the global Tutor option)
+
+### Kubernetes options
 
 * `BACKUP_K8S_CRONJOB_HISTORYLIMIT_FAILURE` (default: `1`)
 * `BACKUP_K8S_CRONJOB_HISTORYLIMIT_SUCCESS` (default: `3`)
@@ -198,6 +221,8 @@ Configuration
 
 Make sure the periodic backup job always runs before the restore job during the 
 day.
+
+### Options related to S3 storage
 
 The following parameters will be pre-populated if the 
 [tutor-contrib-s3](https://github.com/hastexo/tutor-contrib-s3) 
@@ -288,7 +313,7 @@ If your MongoDB instance uses an authentication database name other
 than `admin`, make sure you provide that with
 `BACKUP_MONGODB_AUTHENTICATION_DATABASE`.
 
-## Opting out of single-transaction backups and flushing logs
+### Opting out of single-transaction backups and flushing logs
 
 In certain cloud MySQL services, like AWS Aurora, it might be forbidden (even for the `root` user) to lock the database.
 In these cases you might get errors like `Couldn't execute 'FLUSH TABLES WITH READ LOCK': Access denied for user`. 
