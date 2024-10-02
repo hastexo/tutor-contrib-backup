@@ -34,10 +34,10 @@ appropriate one:
 | Lilac             | `>=12.0, <13`      | Not supported | Not supported  |
 | Maple             | `>=13.2, <14`[^v1] | `maple`       | 0.3.x          |
 | Nutmeg            | `>=14.0, <15`      | `nutmeg`      | 1.x.x          |
-| Olive             | `>=15.0, <16`      | `main`        | 2.x.x          |
-| Palm              | `>=16.0, <17`      | `main`        | 3.x.x          |
-| Quince            | `>=17.0, <18`      | `main`        | 3.x.x          |
-| Redwood[^journal] | `>=18.0, <19`      | `main`        | 3.x.x          |
+| Olive             | `>=15.0, <16`      | `olive`       | 2.x.x          |
+| Palm              | `>=16.0, <17`      | `quince`      | `>=2.1.0, <4`  |
+| Quince            | `>=17.0, <18`      | `quince`      | `>=3.1.0, <4`  |
+| Redwood[^journal] | `>=18.0, <19`      | `main`        | `>=4`          |
 
 [^v1]: For Open edX Maple and Tutor 13, you must run version 13.3.0 or later.
        That is because this plugin uses the Tutor v1 plugin API, [which was introduced with that release](https://github.com/overhangio/tutor/blob/master/CHANGELOG.md#v1320-2022-04-24).
