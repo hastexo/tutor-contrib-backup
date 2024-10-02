@@ -1,4 +1,4 @@
-FROM docker.io/ubuntu:20.04
+FROM docker.io/ubuntu:22.04
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update && \

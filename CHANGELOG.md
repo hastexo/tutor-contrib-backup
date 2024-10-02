@@ -1,3 +1,10 @@
+## Unreleased
+
+* [Enhancement] Drop support for Python 3.8; update the Ubuntu base image to
+  "Ubuntu Jammy" (22.04).
+
+When updating your plugin to this version, you'll need to rebuild the image.
+
 ## Version 3.3.0 (2024-07-31)
 
 * [Enhancement] Support Tutor 18 and Open edX Redwood.
