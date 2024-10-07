@@ -39,7 +39,7 @@ appropriate one:
 | Quince            | `>=17.0, <18`      | `quince`      | `>=3.1.0, <4`  |
 | Redwood[^journal] | `>=18.0, <19`      | `main`        | `>=4`          |
 
-[^v1]: For Open edX Maple and Tutor 13, you must run version 13.3.0 or later.
+[^v1]: For Open edX Maple and Tutor 13, you must run version 14.0.0 or later.
        That is because this plugin uses the Tutor v1 plugin API, [which was introduced with that release](https://github.com/overhangio/tutor/blob/master/CHANGELOG.md#v1320-2022-04-24).
 
 [^journal]: Tutor 18 and Open edX Redwood included a [leap in MongoDB releases (from 4.4 to 7.0)](https://github.com/overhangio/tutor/releases/tag/v18.0.0).
@@ -48,7 +48,7 @@ appropriate one:
 
 ## Installation
 
-    pip install git+https://github.com/hastexo/tutor-contrib-backup@v3.3.0
+    pip install git+https://github.com/hastexo/tutor-contrib-backup@v4.0.0
 
 ## Usage
 
@@ -71,7 +71,7 @@ You can do this in one of two ways:
    In this case, this plugin will push the `backup` image to your previously configured registry.
 2. You override just the `BACKUP_DOCKER_IMAGE` configuration value, for example:
    ```
-   tutor config save --set BACKUP_DOCKER_IMAGE=localhost:5000/backup:v3.3.0
+   tutor config save --set BACKUP_DOCKER_IMAGE=localhost:5000/backup:v4.0.0
    ```
    Substitute the correct registry prefix if, rather than using a local instance of the [Distribution Registry](https://github.com/distribution/distribution), you are using a container registry provided by [GitHub](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry), [GitLab](https://docs.gitlab.com/ee/user/packages/container_registry/), [Harbor](https://goharbor.io/), etc.
 
@@ -203,7 +203,7 @@ This prevents your users from encountering errors during the restore process.
 
 ### General options
 
-* `BACKUP_DOCKER_IMAGE` (default: `<DOCKER_REGISTRY>backup:v3.3.0`, relative to `DOCKER_REGISTRY` as defined by the global Tutor option)
+* `BACKUP_DOCKER_IMAGE` (default: `<DOCKER_REGISTRY>backup:v4.0.0`, relative to `DOCKER_REGISTRY` as defined by the global Tutor option)
 
 ### Kubernetes options
 
