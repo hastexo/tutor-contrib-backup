@@ -1,3 +1,7 @@
+## Unreleased
+
+* [Enhancement] Support Tutor 19 and Open edX Sumac.
+
 ## Version 4.0.0 (2024-10-07)
 
 * [Enhancement] Drop support for Python 3.8; update the Ubuntu base image to
