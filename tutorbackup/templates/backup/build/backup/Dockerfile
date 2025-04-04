@@ -1,4 +1,4 @@
-FROM docker.io/ubuntu:22.04
+FROM {{ BACKUP_BASE_IMAGE }}
 ENV PYTHONUNBUFFERED 1
 
 RUN apt-get update && \

@@ -16,6 +16,7 @@ from tutor.commands.k8s import k8s as k8s_command_group, K8sTaskRunner
 config = {
     "defaults": {
         "VERSION": __version__,
+        "BASE_IMAGE": "docker.io/ubuntu:22.04",
         "DOCKER_IMAGE": "{{ DOCKER_REGISTRY }}backup:{{ BACKUP_VERSION }}",  # noqa: E501
         "K8S_CRONJOB_HISTORYLIMIT_FAILURE": 1,
         "K8S_CRONJOB_HISTORYLIMIT_SUCCESS": 3,

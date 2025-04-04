@@ -204,6 +204,7 @@ This prevents your users from encountering errors during the restore process.
 
 ### General options
 
+* `BACKUP_BASE_IMAGE` (default: `docker.io/ubuntu:22.04`)
 * `BACKUP_DOCKER_IMAGE` (default: `<DOCKER_REGISTRY>backup:v4.1.0`, relative to `DOCKER_REGISTRY` as defined by the global Tutor option)
 
 ### Kubernetes options

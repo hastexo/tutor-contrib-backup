@@ -1,3 +1,7 @@
+## Unreleased
+
+* [Enhancement] Allow to override the Dockerfile base image. 
+
 ## Version 4.1.0 (2025-01-03)
 
 * [Enhancement] Support Tutor 19 and Open edX Sumac.
