@@ -5,6 +5,7 @@ from botocore.config import Config
 
 
 config = Config(
+    request_checksum_calculation=os.environ['S3_REQUEST_CHECKSUM_CALCULATION'],
     signature_version=os.environ['S3_SIGNATURE_VERSION'],
     s3={
         'addressing_style': os.environ['S3_ADDRESSING_STYLE'],

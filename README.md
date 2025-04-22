@@ -241,6 +241,7 @@ your backup storage, change these configuration parameters:
 * `BACKUP_S3_ACCESS_KEY` (default: `"{{ OPENEDX_AWS_ACCESS_KEY }}"`)
 * `BACKUP_S3_SECRET_ACCESS_KEY` (default: `"{{ OPENEDX_AWS_SECRET_ACCESS_KEY }}"`)
 * `BACKUP_S3_BUCKET_NAME` (default: `"backups"`)
+* `BACKUP_S3_REQUEST_CHECKSUM_CALCULATION` (default: `"when_required"`)
 
 These values can be modified with `tutor config save --set
 PARAM_NAME=VALUE` commands.

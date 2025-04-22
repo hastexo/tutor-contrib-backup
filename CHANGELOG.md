@@ -1,3 +1,9 @@
+## Unreleased
+
+* [Enhancement] Support latest versions of boto3; include the 
+  `BACKUP_S3_REQUEST_CHECKSUM_CALCULATION` configuration option. 
+  Defaults to the value of `S3_REQUEST_CHECKSUM_CALCULATION` as set by the `s3` plugin.
+
 ## Version 4.2.0 (2025-04-15)
 
 * [Enhancement] Allow to override the Dockerfile base image. 

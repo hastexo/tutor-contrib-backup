@@ -37,6 +37,7 @@ config = {
         "S3_ACCESS_KEY": "{{ OPENEDX_AWS_ACCESS_KEY }}",
         "S3_SECRET_ACCESS_KEY": "{{ OPENEDX_AWS_SECRET_ACCESS_KEY }}",
         "S3_BUCKET_NAME": "backups",
+        "S3_REQUEST_CHECKSUM_CALCULATION": "{{ S3_REQUEST_CHECKSUM_CALCULATION | default('when_required') }}",  # noqa: E501
         "MYSQL_DATABASES": [],
         "MONGODB_DATABASES": [],
         "MONGODB_AUTHENTICATION_DATABASE": "admin",
