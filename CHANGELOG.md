@@ -1,4 +1,4 @@
-## Unreleased
+## Version 4.3.0 (2025-04-24)
 
 * [Enhancement] Support latest versions of boto3; include the 
   `BACKUP_S3_REQUEST_CHECKSUM_CALCULATION` configuration option. 
