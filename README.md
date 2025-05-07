@@ -340,6 +340,21 @@ However, you need to make sure that after restoring a backup from a
 prior version, you run `tutor local init` or `tutor k8s init` in order
 to ensure that any required in-place data modifications also rerun.
 
+## Transferring backups
+
+Occasionally, you may want to move the backups for your Open edX platform from one S3 (or compatible) location to another.
+When you do so, you must ensure that you transfer object metadata along with the object contents, otherwise your subsequent restore will fail.
+
+Unless you have already configured [S3 replication](https://docs.aws.amazon.com/AmazonS3/latest/userguide/replication.html) between your storage locations, the recommended facility for one-off transfers is [rclone](https://rclone.org) version 1.59 or later.
+
+Assuming you have two configured rclone [S3 remotes](https://rclone.org/s3/) named `src` and `dest`, and your backup bucket is named `backups` in both, you would run the `rclone sync` command with the following options:
+
+```bash
+rclone sync --metadata --progress {src,dest}:backups
+```
+
+Depending on the size of your backups and your retention policy, running this command may take considerable time.
+
 ## Changelog
 
 For a detailed breakdown of features and fixes in each release, please
