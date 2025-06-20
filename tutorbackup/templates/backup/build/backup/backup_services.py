@@ -6,7 +6,7 @@ import shutil
 import sys
 import tarfile
 from datetime import datetime
-from subprocess import check_call
+from subprocess import check_call, check_output, STDOUT, CalledProcessError
 from pathlib import Path
 
 import click
@@ -49,6 +49,7 @@ def mysqldump():
     port = ENV['MYSQL_PORT']
     single_transaction = bool(strtobool(ENV['MYSQL_SINGLE_TRANSACTION']))
     outfile = MYSQL_DUMPFILE
+    dblist = []
 
     mysql_databases = ENV.get('MYSQL_DATABASES')
     if mysql_databases:
@@ -56,8 +57,25 @@ def mysqldump():
         logger.info(f"Dumping MySQL databases {mysql_databases} "
                     f"on {host}:{port} to {outfile}")
     else:
-        databases_statement = "--all-databases"
-        logger.info(f"Dumping all MySQL databases "
+        sql_query="""SELECT schema_name FROM information_schema.schemata WHERE schema_name NOT IN
+             ('mysql', 'sys', 'performance_schema', 'information_schema')"""
+
+        mysql_cmd = (f"mysql --host={host} --port={port} --user={user} --password={password} -BANe \"{sql_query}\" ")
+
+        logger.info("Retrieving the list of database schemas to backup")
+        try:
+            dbout = check_output([mysql_cmd], stderr=STDOUT, timeout=5, shell=True, universal_newlines=True)
+        except CalledProcessError as e:
+            logger.error("MySQL Command Status : FAIL", e.returncode, e.output)
+        else:
+            # The element at position [0] is the following message, so we have to exclude it from the schemas list:
+            # "mysql: [Warning] Using a password on the command line interface can be insecure."
+            dblist = dbout.splitlines()[1:]
+
+        databases = " ".join(dblist)
+
+        databases_statement = f"--databases {databases}"
+        logger.info(f"Dumping MySQL databases "
                     f"on {host}:{port} to {outfile}")
 
     cmd = ("mysqldump "
